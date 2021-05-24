@@ -4,7 +4,7 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 
 public class MainMenu : MonoBehaviour
-{   
+{
 
     // Start is called before the first frame update
     void Start()
@@ -19,8 +19,10 @@ public class MainMenu : MonoBehaviour
     }
 
     public void PlayGame()
-    {   
-        Debug.Log("hello");
-        SceneManager.LoadScene("Scene/Game");
+    {
+        SceneManager.LoadScene("Scene/Lobby");
+
     }
+
+
 }
