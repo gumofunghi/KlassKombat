@@ -14,6 +14,8 @@ public class LobbyController : MonoBehaviourPunCallbacks
     public Text roomIdText;
     public InputField roomIdInput;
 
+    public Text playerList;
+
     void Start()
     {
         PhotonNetwork.ConnectUsingSettings();
@@ -23,18 +25,8 @@ public class LobbyController : MonoBehaviourPunCallbacks
     {
         Debug.Log("Connected to " + PhotonNetwork.CloudRegion);
 
-        PhotonNetwork.JoinLobby();
+        PhotonNetwork.NickName = "Merry " + RandomString();
 
-    }
-
-    public override void OnRoomListUpdate(List<RoomInfo> roomList)
-    {
-        Debug.Log(roomList.Count);
-
-        foreach (var room in roomList)
-        {
-            Debug.Log(room.Name);
-        }
     }
 
     public void CreateRoom()
@@ -54,17 +46,21 @@ public class LobbyController : MonoBehaviourPunCallbacks
     }
 
     public override void OnCreatedRoom()
-    {   Debug.Log(roomId);
+    {
         roomIdText.text = "Current Room ID: " + roomId;
-        OnRoomListUpdate(roomList);
+
+        foreach (Player player in PhotonNetwork.PlayerList)
+        {
+            playerList.text += "\n" + player.NickName;
+
+        }
+
     }
 
     public void JoinRoom()
     {
-
         PhotonNetwork.JoinRoom(roomIdInput.text);
-        // int t = PhotonNetwork.room.PlayerCount();
-        // Debug.Log(t);
+
     }
 
     public override void OnJoinRoomFailed(short returnCode, string message)
@@ -91,12 +87,6 @@ public class LobbyController : MonoBehaviourPunCallbacks
     {
         PhotonNetwork.LeaveRoom();
         roomIdText.text = "Current Room ID: ";
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-
     }
 
     private string RandomString()
