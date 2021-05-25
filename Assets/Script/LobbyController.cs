@@ -8,6 +8,8 @@ public class LobbyController : MonoBehaviourPunCallbacks
 {
     // Start is called before the first frame update
     public static LobbyController lobby;
+    public static string roomId;
+    public static List<RoomInfo> roomList = new List<RoomInfo>();
 
     void Start()
     {
@@ -15,9 +17,49 @@ public class LobbyController : MonoBehaviourPunCallbacks
     }
 
     public override void OnConnectedToMaster()
-    {
+    {   
         Debug.Log("Connected to " + PhotonNetwork.CloudRegion);
 
+        PhotonNetwork.JoinLobby();
+
+    }
+
+    public override void OnRoomListUpdate(List<RoomInfo> roomList){
+        Debug.Log(roomList.Count);
+
+        foreach(var room in roomList){
+            Debug.Log(room.Name);
+        }
+    }
+
+    public void CreateRoom()
+    {
+        roomId = "12345";
+
+        RoomOptions roomOptions = new RoomOptions() { IsVisible = false, IsOpen = true, MaxPlayers = 4 };
+        TypedLobby typedLobby = new TypedLobby(roomId, LobbyType.Default); //3
+
+        PhotonNetwork.CreateRoom(roomId, roomOptions);
+
+    }
+
+    public override void OnCreateRoomFailed(short returnCode, string message)
+    {
+        Debug.Log("fail to create room, so sad");
+    }
+
+    public override void OnCreatedRoom()
+    {
+        Debug.Log("yeah, name = " + roomId);
+        OnRoomListUpdate(roomList);
+    }
+
+    public void JoinRoom()
+    {   
+        
+        PhotonNetwork.JoinRoom("12345");
+        // int t = PhotonNetwork.room.PlayerCount();
+        // Debug.Log(t);
     }
 
     public override void OnJoinRandomFailed(short returnCode, string message)
@@ -26,49 +68,25 @@ public class LobbyController : MonoBehaviourPunCallbacks
 
     }
 
-    public void CreateRoom()
+    public override void OnJoinedRoom()
     {
-        // int roomName = randomString();
 
-        RoomOptions roomOptions = new RoomOptions() { IsVisible = true, IsOpen = true, MaxPlayers = 4 };
-
-        PhotonNetwork.CreateRoom("123456", roomOptions);
-
-    }
-
-    public override void OnCreateRoomFailed(short returnCode, string message)
-    {
-        Debug.Log("fail to create room, so sad");
-        CreateRoom();
-    }
-
-    public override void OnCreatedRoom()
-    {
-        Debug.Log("yeah ");
-    }
-
-    public void JoinRoom()
-    {
-        
-        string roomName = "123456";
-
-        if(PhotonNetwork.JoinRoom(roomName)){
-            Debug.Log("joined yeah=h");
+        if (PhotonNetwork.IsMasterClient)
+        {
+            Debug.Log("joined as host");
         }
-        else{
-            Debug.Log("joined failed, u suc");
+        else
+        {
+            Debug.Log("join room nia");
         }
 
     }
-
-
 
     // Update is called once per frame
     void Update()
     {
 
     }
-
 
     private string randomString()
     {
