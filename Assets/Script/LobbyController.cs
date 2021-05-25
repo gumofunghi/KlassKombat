@@ -49,14 +49,6 @@ public class LobbyController : MonoBehaviourPunCallbacks
     {
         roomIdText.text = "Current Room ID: " + roomId;
 
-        playerList.text = "";
-
-        foreach (Player player in PhotonNetwork.PlayerList)
-        {
-            playerList.text += player.NickName + "\n";
-
-        }
-
     }
 
     public void JoinRoom()
@@ -95,7 +87,13 @@ public class LobbyController : MonoBehaviourPunCallbacks
     {
         PhotonNetwork.LeaveRoom();
         roomIdText.text = "Current Room ID: ";
+        playerList.text = "";
 
+    }
+
+    public override void OnPlayerEnteredRoom(Player newPlayer)
+    {
+        playerList.text += "\n" + newPlayer.NickName;
     }
 
     public override void OnPlayerLeftRoom(Player quitter)
