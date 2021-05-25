@@ -83,6 +83,12 @@ public class LobbyController : MonoBehaviourPunCallbacks
             Debug.Log("join room nia");
         }
 
+        foreach (Player player in PhotonNetwork.PlayerList)
+        {
+            playerList.text += player.NickName + "\n";
+
+        }
+
     }
 
     public void LeaveRoom()
