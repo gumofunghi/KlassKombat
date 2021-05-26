@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 using Photon.Pun;
 using Photon.Realtime;
@@ -94,6 +95,15 @@ public class LobbyController : MonoBehaviourPunCallbacks
     public override void OnPlayerEnteredRoom(Player newPlayer)
     {
         playerList.text += "\n" + newPlayer.NickName;
+    }
+
+    public void StartGame()
+    {
+        if (PhotonNetwork.CurrentRoom.PlayerCount == 1)
+        {   
+            PhotonNetwork.AutomaticallySyncScene = true;
+            PhotonNetwork.LoadLevel("Scene/Game");
+        }
     }
 
     public override void OnPlayerLeftRoom(Player quitter)
