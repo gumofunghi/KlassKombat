@@ -102,7 +102,8 @@ public class LobbyController : MonoBehaviourPunCallbacks
         if (PhotonNetwork.CurrentRoom.PlayerCount == 1)
         {   
             PhotonNetwork.AutomaticallySyncScene = true;
-            PhotonNetwork.LoadLevel("Scene/Game");
+            SceneManager.LoadSceneAsync("Scene/MainGame", LoadSceneMode.Single);
+
         }
     }
 
