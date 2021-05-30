@@ -27,6 +27,7 @@ public class LobbyController : MonoBehaviourPunCallbacks
         Debug.Log("Connected to " + PhotonNetwork.CloudRegion);
 
         PhotonNetwork.NickName = "Merry " + RandomString();
+        PhotonNetwork.AutomaticallySyncScene = true;
 
     }
 
@@ -99,10 +100,15 @@ public class LobbyController : MonoBehaviourPunCallbacks
 
     public void StartGame()
     {
-        if (PhotonNetwork.CurrentRoom.PlayerCount == 1)
-        {   
-            PhotonNetwork.AutomaticallySyncScene = true;
-            SceneManager.LoadSceneAsync("Scene/MainGame", LoadSceneMode.Single);
+        if (PhotonNetwork.CurrentRoom.PlayerCount >= 1)
+        {
+
+            if (PhotonNetwork.IsMasterClient)
+            {
+                PhotonNetwork.LoadLevel("Scene/MainGame");
+            }
+
+            // SceneManager.LoadSceneAsync(, LoadSceneMode.Single);
 
         }
     }
