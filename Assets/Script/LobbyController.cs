@@ -8,134 +8,82 @@ using Photon.Realtime;
 
 public class LobbyController : MonoBehaviourPunCallbacks
 {
-    // Start is called before the first frame update
-    public static LobbyController lobby;
-    public static string roomId;
-    public static List<RoomInfo> roomList = new List<RoomInfo>();
-    public Text roomIdText;
-    public InputField roomIdInput;
 
-    public Text playerList;
+    private PhotonView PV;
+    public Text roomIdText;
+    public Text homeTeam;
+    public Text awayTeam;
+
 
     void Start()
     {
-        PhotonNetwork.ConnectUsingSettings();
-    }
+        roomIdText.text = PhotonNetwork.CurrentRoom.Name;
 
-    public override void OnConnectedToMaster()
-    {
-        Debug.Log("Connected to " + PhotonNetwork.CloudRegion);
+        PV = GetComponent<PhotonView>();
 
-        PhotonNetwork.NickName = "Merry " + RandomString();
-        PhotonNetwork.AutomaticallySyncScene = true;
+        ExitGames.Client.Photon.Hashtable playerProperties = new ExitGames.Client.Photon.Hashtable();
 
-    }
-
-    public void CreateRoom()
-    {
-        roomId = RandomString();
-
-        RoomOptions roomOptions = new RoomOptions() { IsVisible = false, IsOpen = true, MaxPlayers = 4 };
-        TypedLobby typedLobby = new TypedLobby(roomId, LobbyType.Default); //3
-
-        PhotonNetwork.CreateRoom(roomId, roomOptions);
-
-    }
-
-    public override void OnCreateRoomFailed(short returnCode, string message)
-    {
-        Debug.Log("fail to create room, so sad");
-    }
-
-    public override void OnCreatedRoom()
-    {
-        roomIdText.text = "Current Room ID: " + roomId;
-
-    }
-
-    public void JoinRoom()
-    {
-        PhotonNetwork.JoinRoom(roomIdInput.text);
-
-    }
-
-    public override void OnJoinRoomFailed(short returnCode, string message)
-    {
-        Debug.Log("haha, join fail, u sucks");
-
-    }
-
-    public override void OnJoinedRoom()
-    {
-
-        if (PhotonNetwork.IsMasterClient)
+        if (PhotonNetwork.CurrentRoom.PlayerCount < 2)
         {
-            Debug.Log("joined as host");
+            playerProperties["team"] = 0;
+            PhotonNetwork.LocalPlayer.CustomProperties = playerProperties;
         }
         else
         {
-            Debug.Log("join room nia");
+            playerProperties["team"] = 1;
+            PhotonNetwork.LocalPlayer.CustomProperties = playerProperties;
         }
 
-        foreach (Player player in PhotonNetwork.PlayerList)
+        if (PV.IsMine)
         {
-            playerList.text += player.NickName + "\n";
-
+            PV.RPC("TeamAssignment", RpcTarget.AllBuffered);
         }
+
 
     }
+
 
     public void LeaveRoom()
     {
         PhotonNetwork.LeaveRoom();
-        roomIdText.text = "Current Room ID: ";
-        playerList.text = "";
 
-    }
+        PhotonNetwork.LoadLevel("Scene/MainMenu");
 
-    public override void OnPlayerEnteredRoom(Player newPlayer)
-    {
-        playerList.text += "\n" + newPlayer.NickName;
     }
 
     public void StartGame()
     {
         if (PhotonNetwork.CurrentRoom.PlayerCount >= 1)
         {
-
             if (PhotonNetwork.IsMasterClient)
             {
                 PhotonNetwork.LoadLevel("Scene/MainGame");
             }
-
-            // SceneManager.LoadSceneAsync(, LoadSceneMode.Single);
-
         }
     }
 
     public override void OnPlayerLeftRoom(Player quitter)
     {
-        foreach (Player player in PhotonNetwork.PlayerList)
-        {
-            playerList.text += player.NickName + "\n";
+        // foreach (Player player in PhotonNetwork.PlayerList)
+        // {
+        //     playerList.text += player.NickName + "\n";
 
-        }
+        // }
     }
 
-    private string RandomString()
+    [PunRPC]
+    void TeamAssignment()
     {
-        int length = 5;
-        string result = "";
 
-        string characters = "0123456789abcdefghijklmnopqrstuvwxABCDEFGHIJKLMNOPQRSTUVWXYZ";
-
-        for (int i = 0; i < length; i++)
+        if ((int)PhotonNetwork.LocalPlayer.CustomProperties["team"] == 0)
         {
-            int a = Random.Range(0, characters.Length);
-
-            result = result + characters[a];
+            homeTeam.text += "\n" + PhotonNetwork.LocalPlayer.NickName;
+        }
+        else
+        {
+            awayTeam.text += "\n" + PhotonNetwork.LocalPlayer.NickName;
         }
 
-        return result;
     }
+
 }

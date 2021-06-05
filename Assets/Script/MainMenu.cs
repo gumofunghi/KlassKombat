@@ -2,26 +2,83 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
-
-public class MainMenu : MonoBehaviour
+using UnityEngine.UI;
+using Photon.Pun;
+using Photon.Realtime;
+public class MainMenu : MonoBehaviourPunCallbacks
 {
 
-    // Start is called before the first frame update
+    public static string roomId;
+
+    public Text username;
+    public InputField roomIdInput;
+    public Hashtable hashtable;
+
     void Start()
     {
+        PhotonNetwork.ConnectUsingSettings();
+    }
+
+    public override void OnConnectedToMaster()
+    {
+        Debug.Log("Connected to " + PhotonNetwork.CloudRegion);
+
+        PhotonNetwork.NickName = "Merry " + RandomString();
+
+        username.text = PhotonNetwork.NickName;
+
+        PhotonNetwork.AutomaticallySyncScene = true;
 
     }
 
-    // Update is called once per frame
-    void Update()
+    public void CreateRoom()
     {
+        roomId = RandomString();
+
+        RoomOptions roomOptions = new RoomOptions() { IsVisible = false, IsOpen = true, MaxPlayers = 4, PublishUserId = true };
+        TypedLobby typedLobby = new TypedLobby(roomId, LobbyType.Default);
+
+        PhotonNetwork.CreateRoom(roomId, roomOptions);
 
     }
 
-    public void PlayGame()
+    public override void OnCreateRoomFailed(short returnCode, string message)
     {
-        SceneManager.LoadScene("Scene/Lobby");
+        Debug.Log("fail to create room, so sad");
+    }
 
+    public void JoinRoom()
+    {
+        PhotonNetwork.JoinRoom(roomIdInput.text);
+
+    }
+
+    public override void OnJoinRoomFailed(short returnCode, string message)
+    {
+        Debug.Log("haha, join fail, u sucks");
+
+    }
+
+    public override void OnJoinedRoom()
+    {
+        PhotonNetwork.LoadLevel("Scene/Lobby");
+    }
+
+    private string RandomString()
+    {
+        int length = 5;
+        string result = "";
+
+        string characters = "0123456789abcdefghijklmnopqrstuvwxABCDEFGHIJKLMNOPQRSTUVWXYZ";
+
+        for (int i = 0; i < length; i++)
+        {
+            int a = Random.Range(0, characters.Length);
+
+            result = result + characters[a];
+        }
+
+        return result;
     }
 
 
