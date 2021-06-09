@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.EventSystems;
 using System.IO;
 using UnityEngine.UI;
 using Photon.Pun;
@@ -13,11 +14,17 @@ public class GameController : MonoBehaviourPunCallbacks
 
     public GameObject[] entities;
 
+    public Text timer;
+
     public QuestionRoot qs;
 
     public int currIndex;
 
-    private PhotonView pv;
+    private PhotonView PV;
+
+    private GameObject player;
+
+    float time = 180;
 
     void Start()
     {
@@ -25,22 +32,35 @@ public class GameController : MonoBehaviourPunCallbacks
         string jsonString = File.ReadAllText("questions.json");
         qs = JsonUtility.FromJson<QuestionRoot>(jsonString);
 
-        pv = GetComponent<PhotonView>();
-        PhotonNetwork.AutomaticallySyncScene = true;
+        PV = GetComponent<PhotonView>();
 
-        // foreach(Player p in LobbyController.homeList){
-        //     entities[0].GetComponentInChildren<Text>().text = p.NickName;
-        // }
+        if ((bool)PhotonNetwork.LocalPlayer.CustomProperties["home"])
+        {
+            player = PhotonNetwork.Instantiate("EntityLeft", new Vector3(0f, 0f, 0f), Quaternion.identity, 0);
+        }
+        else
+        {
+            player = PhotonNetwork.Instantiate("EntityRight", new Vector3(0f, 0f, 0f), Quaternion.identity, 0);
+        }
 
-        // foreach(Player p in LobbyController.awayList){
-        //     entities[1].GetComponentInChildren<Text>().text = p.NickName;
-        // }
+        PV.RPC("DisplayTeam", RpcTarget.AllBuffered);
 
     }
 
     // Update is called once per frame
     void Update()
     {
+
+        if (time > 0)
+        {
+            time -= Time.deltaTime;
+            timer.text = time.ToString("F0");
+        }
+        else
+        {
+            GameOver();
+        }
+
         ProcessInputs();
         question.text = qs.questions[currIndex].title;
 
@@ -59,15 +79,55 @@ public class GameController : MonoBehaviourPunCallbacks
         }
     }
 
-    public void NextQuestion()
+    public void Answered()
     {
-        if (pv.IsMine)
+        string answer = EventSystem.current.currentSelectedGameObject.name;
+
+        if (int.Parse(answer) == qs.questions[currIndex].answer)
         {
-            currIndex++;
+            print("yesy");
+        }
+        else{
+            print("NO");
         }
 
+        // if (PV.IsMine)
+        // {
+        //     currIndex++;
+        // }
+
     }
+
+    [PunRPC]
+    void DisplayTeam()
+    {
+        GameObject[] players = GameObject.FindGameObjectsWithTag("Player");
+
+        foreach (GameObject p in players)
+        {
+            Player Owner = p.GetPhotonView().Owner;
+
+            if ((bool)Owner.CustomProperties["home"])
+            {
+                GameObject homeTeam = GameObject.Find("Home");
+                p.transform.SetParent(homeTeam.transform, false);
+
+            }
+            else
+            {
+                GameObject awayTeam = GameObject.Find("Away");
+                p.transform.SetParent(awayTeam.transform, false);
+            }
+        }
+    }
+
+    void GameOver()
+    {
+        print("we r end game now!");
+    }
+
 }
+
 
 [System.Serializable]
 public class Question

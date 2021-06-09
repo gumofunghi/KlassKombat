@@ -5,15 +5,17 @@ using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 using Photon.Pun;
 using Photon.Realtime;
+using Hashtable = ExitGames.Client.Photon.Hashtable;
 
 public class LobbyController : MonoBehaviourPunCallbacks
 {
 
     private PhotonView PV;
     public Text roomIdText;
-    public Text homeTeam;
-    public Text awayTeam;
+    public GameObject homeTeam;
+    public GameObject awayTeam;
 
+    private GameObject PlayerName;
 
     void Start()
     {
@@ -21,27 +23,29 @@ public class LobbyController : MonoBehaviourPunCallbacks
 
         PV = GetComponent<PhotonView>();
 
-        ExitGames.Client.Photon.Hashtable playerProperties = new ExitGames.Client.Photon.Hashtable();
+        PlayerName = PhotonNetwork.Instantiate("PlayerName", new Vector3(-200f, 250f, 0f), Quaternion.identity, 0);
 
         if (PhotonNetwork.CurrentRoom.PlayerCount < 2)
         {
-            playerProperties["team"] = 0;
-            PhotonNetwork.LocalPlayer.CustomProperties = playerProperties;
+            Hashtable playerProperties = new Hashtable() { { "home", true } };
+            PhotonNetwork.LocalPlayer.SetCustomProperties(playerProperties);
         }
         else
         {
-            playerProperties["team"] = 1;
-            PhotonNetwork.LocalPlayer.CustomProperties = playerProperties;
-        }
-
-        if (PV.IsMine)
-        {
-            PV.RPC("TeamAssignment", RpcTarget.AllBuffered);
+            Hashtable playerProperties = new Hashtable() { { "home", false } };
+            PhotonNetwork.LocalPlayer.SetCustomProperties(playerProperties);
         }
 
 
     }
 
+    public override void OnPlayerPropertiesUpdate(Player target, Hashtable changedProps)
+    {
+        if (PV.IsMine)
+        {
+            PV.RPC("TeamAssignment", RpcTarget.AllBuffered);
+        }
+    }
 
     public void LeaveRoom()
     {
@@ -62,28 +66,40 @@ public class LobbyController : MonoBehaviourPunCallbacks
         }
     }
 
+    public void SwitchTeam()
+    {
+        Hashtable playerProperties = new Hashtable() { { "home", !(bool)PhotonNetwork.LocalPlayer.CustomProperties["home"] } };
+        PhotonNetwork.LocalPlayer.SetCustomProperties(playerProperties);
+    }
+
     public override void OnPlayerLeftRoom(Player quitter)
     {
-        // foreach (Player player in PhotonNetwork.PlayerList)
-        // {
-        //     playerList.text += player.NickName + "\n";
-
-        // }
     }
 
     [PunRPC]
     void TeamAssignment()
     {
+        GameObject[] gs = GameObject.FindGameObjectsWithTag("PlayerName");
 
-        if ((int)PhotonNetwork.LocalPlayer.CustomProperties["team"] == 0)
+        foreach (GameObject g in gs)
         {
-            homeTeam.text += "\n" + PhotonNetwork.LocalPlayer.NickName;
-        }
-        else
-        {
-            awayTeam.text += "\n" + PhotonNetwork.LocalPlayer.NickName;
+            Player Owner = g.GetPhotonView().Owner;
+
+            if ((bool)Owner.CustomProperties["home"])
+            {
+                g.GetComponentInChildren<Text>().text = Owner.NickName;
+                g.transform.SetParent(homeTeam.transform, false);
+            }
+            else
+            {
+                g.GetComponentInChildren<Text>().text = Owner.NickName;
+                g.transform.SetParent(awayTeam.transform, false);
+            }
+
         }
 
     }
+
+
 
 }

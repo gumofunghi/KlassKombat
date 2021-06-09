@@ -35,7 +35,8 @@ public class MainMenu : MonoBehaviourPunCallbacks
     {
         roomId = RandomString();
 
-        RoomOptions roomOptions = new RoomOptions() { IsVisible = false, IsOpen = true, MaxPlayers = 4, PublishUserId = true };
+        RoomOptions roomOptions = new RoomOptions() { IsVisible = false, IsOpen = true, MaxPlayers = 4, PublishUserId = true, BroadcastPropsChangeToAll = true};
+
         TypedLobby typedLobby = new TypedLobby(roomId, LobbyType.Default);
 
         PhotonNetwork.CreateRoom(roomId, roomOptions);
@@ -60,7 +61,8 @@ public class MainMenu : MonoBehaviourPunCallbacks
     }
 
     public override void OnJoinedRoom()
-    {
+    {   
+
         PhotonNetwork.LoadLevel("Scene/Lobby");
     }
 

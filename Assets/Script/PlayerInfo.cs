@@ -1,26 +1,17 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
+using Photon.Pun;
+using Photon.Realtime;
 
-public class PlayerInfo : MonoBehaviour
+public class PlayerInfo : MonoBehaviourPunCallbacks
 {
-    // Start is called before the first frame update
-
-    private int team;
-
-
+    public Text nameText;
     void Start()
     {
+        nameText.text = gameObject.GetPhotonView().Owner.NickName;
 
     }
 
-    public void setTeam(int t)
-    {
-        team = t;
-    }
-
-    public int getTeam()
-    {
-        return team;
-    }
 }
