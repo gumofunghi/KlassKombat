@@ -71,7 +71,7 @@ public class MainMenu : MonoBehaviourPunCallbacks
         int length = 5;
         string result = "";
 
-        string characters = "0123456789abcdefghijklmnopqrstuvwxABCDEFGHIJKLMNOPQRSTUVWXYZ";
+        string characters = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ";
 
         for (int i = 0; i < length; i++)
         {

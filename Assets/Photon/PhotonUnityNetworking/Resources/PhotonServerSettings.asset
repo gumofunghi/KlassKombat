@@ -37,6 +37,7 @@ MonoBehaviour:
   - DestroyRpc
   - TeamAssignment
   - DisplayTeam
+  - Action
   DisableAutoOpenWizard: 1
   ShowSettings: 0
   DevRegionSetOnce: 1

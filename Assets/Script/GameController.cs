@@ -1,4 +1,4 @@
-﻿using System.Collections;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
@@ -6,25 +6,29 @@ using System.IO;
 using UnityEngine.UI;
 using Photon.Pun;
 using Photon.Realtime;
+using Hashtable = ExitGames.Client.Photon.Hashtable;
 
 public class GameController : MonoBehaviourPunCallbacks
 {
     public Text question;
     public Button[] answers;
-
     public GameObject[] entities;
-
     public Text timer;
-
     public QuestionRoot qs;
-
     public int currIndex;
-
     private PhotonView PV;
-
     private GameObject player;
-
     float time = 180;
+    private int[] nextQuestion = { 0, 0 }; // states: 0 - pending, 1 - incorrect, 2 - correct
+
+    private Hashtable roomProperties = new Hashtable();
+    void Awake()
+    {
+        for (int i = 0; i < 2; i++)
+        {
+            TopBar.SetHP(100, i);
+        }
+    }
 
     void Start()
     {
@@ -42,7 +46,6 @@ public class GameController : MonoBehaviourPunCallbacks
         {
             player = PhotonNetwork.Instantiate("EntityRight", new Vector3(0f, 0f, 0f), Quaternion.identity, 0);
         }
-
         PV.RPC("DisplayTeam", RpcTarget.AllBuffered);
 
     }
@@ -51,17 +54,16 @@ public class GameController : MonoBehaviourPunCallbacks
     void Update()
     {
 
-        if (time > 0)
+        if (time <= 0 || currIndex < qs.questions.Length)
+        {
+            GameOver();
+        }
+        else
         {
             time -= Time.deltaTime;
             timer.text = time.ToString("F0");
         }
-        else
-        {
-            GameOver();
-        }
 
-        ProcessInputs();
         question.text = qs.questions[currIndex].title;
 
         for (int i = 0; i < 4; i++)
@@ -71,30 +73,25 @@ public class GameController : MonoBehaviourPunCallbacks
 
     }
 
-    void ProcessInputs()
-    {
-        if (Input.GetKeyDown("space"))
-        {
-            print(PhotonNetwork.NickName);
-        }
-    }
 
     public void Answered()
     {
         string answer = EventSystem.current.currentSelectedGameObject.name;
 
+
         if (int.Parse(answer) == qs.questions[currIndex].answer)
         {
-            print("yesy");
+            PV.RPC("Action", RpcTarget.AllBuffered, true, player.GetComponent<PhotonView>().ViewID, !(bool)PhotonNetwork.LocalPlayer.CustomProperties["home"]);
         }
-        else{
-            print("NO");
+        else
+        {
+            PV.RPC("Action", RpcTarget.AllBuffered, false, player.GetComponent<PhotonView>().ViewID, false);
         }
 
-        // if (PV.IsMine)
-        // {
-        //     currIndex++;
-        // }
+        for (int i = 0; i < 4; i++)
+        {
+            answers[i].GetComponentInChildren<Button>().interactable = false;
+        }
 
     }
 
@@ -119,6 +116,48 @@ public class GameController : MonoBehaviourPunCallbacks
                 p.transform.SetParent(awayTeam.transform, false);
             }
         }
+    }
+
+    [PunRPC]
+    void Action(bool isSuccess, int p, bool team)
+    {
+
+        GameObject result = PhotonView.Find(p).gameObject;
+
+        if (isSuccess)
+        {
+            result.GetComponentInChildren<Image>().sprite = Resources.Load<Sprite>("CheckMark_Simple_Icons_UI");
+
+            int newHP = TopBar.GetHP(team ? 0 : 1);
+
+            TopBar.SetHP(newHP - 5, team ? 0 : 1);
+
+            nextQuestion[team ? 0 : 1] = 2;
+
+        }
+        else
+        {
+            result.GetComponentInChildren<Image>().sprite = Resources.Load<Sprite>("Cross_Simple_Icons_UI");
+
+            nextQuestion[team ? 0 : 1] = 1;
+        }
+
+
+        if (nextQuestion[0] + nextQuestion[1] >= 2)
+        {
+            for (int i = 0; i < 4; i++)
+            {
+                print("yessss");
+                answers[i].GetComponentInChildren<Button>().interactable = true;
+            }
+
+            nextQuestion[0] = 0;
+            nextQuestion[1] = 0;
+
+            currIndex++;
+        }
+
+
     }
 
     void GameOver()

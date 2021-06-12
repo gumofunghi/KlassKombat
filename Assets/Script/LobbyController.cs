@@ -14,7 +14,6 @@ public class LobbyController : MonoBehaviourPunCallbacks
     public Text roomIdText;
     public GameObject homeTeam;
     public GameObject awayTeam;
-
     private GameObject PlayerName;
 
     void Start()
