@@ -2,86 +2,48 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
-using UnityEngine.UI;
-using Photon.Pun;
-using Photon.Realtime;
-public class MainMenu : MonoBehaviourPunCallbacks
+
+public class MainMenu : MonoBehaviour
 {
 
-    public static string roomId;
-
-    public Text username;
-    public InputField roomIdInput;
-    public Hashtable hashtable;
-
-    void Start()
+    public void CreateGame(string CreateName)
     {
-        PhotonNetwork.ConnectUsingSettings();
+        Debug.Log("CREATE");
+        SceneManager.LoadScene(CreateName);
+
     }
 
-    public override void OnConnectedToMaster()
+    public void JoinGame(string JoinName)
     {
-        Debug.Log("Connected to " + PhotonNetwork.CloudRegion);
-
-        PhotonNetwork.NickName = "Merry " + RandomString();
-
-        username.text = PhotonNetwork.NickName;
-
-        PhotonNetwork.AutomaticallySyncScene = true;
+        Debug.Log("JOIN");
+        SceneManager.LoadScene(JoinName);
 
     }
-
-    public void CreateRoom()
+    public void LeaderboardGame(string LeaderboardName)
     {
-        roomId = RandomString();
-
-        RoomOptions roomOptions = new RoomOptions() { IsVisible = false, IsOpen = true, MaxPlayers = 4, PublishUserId = true, BroadcastPropsChangeToAll = true};
-
-        TypedLobby typedLobby = new TypedLobby(roomId, LobbyType.Default);
-
-        PhotonNetwork.CreateRoom(roomId, roomOptions);
+        SceneManager.LoadScene(LeaderboardName);
 
     }
-
-    public override void OnCreateRoomFailed(short returnCode, string message)
+    public void AchievementGame(string AchievementName)
     {
-        Debug.Log("fail to create room, so sad");
-    }
+        SceneManager.LoadScene(AchievementName);
 
-    public void JoinRoom()
+    }
+    public void LoginGame(string LoginPage)
     {
-        PhotonNetwork.JoinRoom(roomIdInput.text);
-
+        SceneManager.LoadScene(LoginPage);
     }
-
-    public override void OnJoinRoomFailed(short returnCode, string message)
+    public void SettingGame(string SettingName)
     {
-        Debug.Log("haha, join fail, u sucks");
+        SceneManager.LoadScene(SettingName);
 
     }
-
-    public override void OnJoinedRoom()
-    {   
-
-        PhotonNetwork.LoadLevel("Scene/Lobby");
-    }
-
-    private string RandomString()
+    public void QuitGame()
     {
-        int length = 5;
-        string result = "";
+        Debug.Log("QUIT");
+        Application.Quit();
 
-        string characters = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ";
-
-        for (int i = 0; i < length; i++)
-        {
-            int a = Random.Range(0, characters.Length);
-
-            result = result + characters[a];
-        }
-
-        return result;
     }
-
-
 }
+
+

@@ -73,13 +73,14 @@ public class Tenenet : MonoBehaviour
 
     }
 
-    public IEnumerator playerResgister(string username, string password)
+    public IEnumerator playerResgister(string username, string password, string firstname, string lastname)
     {
         string alias = username + password;
         string id = username;
-        string fname = username;
-        string lname = "";
-        UnityWebRequest www = UnityWebRequest.Get(URL + "/createPlayer" + "?token=" + token + "&alias=" + alias + "&id=" + id + "&fname=" + fname + "&lname=" + lname);
+        string fname = firstname;
+        string lname = lastname;
+        UnityWebRequest www = UnityWebRequest.Get(URL + "/createPlayer" + "?token=" + token + "&alias=" 
+                                + alias + "&id=" + id + "&fname=" + fname + "&lname=" + lname);
 
         yield return www.SendWebRequest();
 
@@ -93,4 +94,68 @@ public class Tenenet : MonoBehaviour
             
         }
     }
+
+    // public IEnumerator createMetric(){
+    //     string metric = "high_score";
+    //     string id = "high_score";
+    //     string name = "high_score";
+    //     // string name = "high_score";
+        
+        
+    //     UnityWebRequest www = UnityWebRequest.Get(URL + "/insertPlayerActivity" + "?token=" + token + "&metric=" + metric + "&id=" + id + "&operator=add" + "&value" + value);
+
+    //     yield return www.SendWebRequest();
+
+    //     if (www.isNetworkError || www.isHttpError){
+    //         Debug.Log(www.error);
+    //     }
+    //     else
+    //     {
+            
+    //         Debug.Log(www.downloadHandler.text);
+            
+    //     }
+    // }
+
+    public IEnumerator updatePlayerScore()
+    {
+        string alias = "jq123";
+        string id = "high_score";
+        int value = 100;
+        
+        UnityWebRequest www = UnityWebRequest.Get(URL + "/insertPlayerActivity" + "?token=" + token + "&alias=" + alias + "&id=" + id + "&operator=" + "add" + "&value=" + value);
+
+        yield return www.SendWebRequest();
+
+        if (www.isNetworkError || www.isHttpError){
+            Debug.Log(www.error);
+        }
+        else
+        {
+            
+            Debug.Log(www.downloadHandler.text);
+            
+        }
+    }
+
+    public IEnumerator getScoreLeaderboard()
+    {
+        string id = "lb_score";
+        
+        UnityWebRequest www = UnityWebRequest.Get(URL + "/getLeaderboard" + "?token=" + token + "&id=" + id);
+
+        yield return www.SendWebRequest();
+
+        if (www.isNetworkError || www.isHttpError){
+            Debug.Log(www.error);
+        }
+        else
+        {
+            
+            Debug.Log(www.downloadHandler.text);
+            
+        }
+    }
+
+    
 }

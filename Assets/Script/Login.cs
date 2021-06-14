@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
+using UnityEngine.SceneManagement;
 
 public class Login : MonoBehaviour
 {
@@ -19,6 +20,11 @@ public class Login : MonoBehaviour
         LoginButton.onClick.AddListener(() => {
             StartCoroutine(tenenet.playerLogin(UsernameInput.text, PasswordInput.text));
         });
+    }
+
+    public void toRegisterPage()
+    {
+        SceneManager.LoadScene("RegisterPage");
     }
 
    
