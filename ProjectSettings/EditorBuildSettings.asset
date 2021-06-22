@@ -6,30 +6,30 @@ EditorBuildSettings:
   serializedVersion: 2
   m_Scenes:
   - enabled: 1
-    path: Assets/Scene/MainMenu_New.unity
-    guid: 2c1a98af441837d4690de146342fee7e
-  - enabled: 1
-    path: Assets/Scene/MainMenu.unity
-    guid: 005ee66dae44cdc4d864d41d04e8993b
-  - enabled: 0
-    path: Assets/Scene/Game.unity
-    guid: 9fc0d4010bbf28b4594072e72b8655ab
-  - enabled: 1
-    path: Assets/Scene/MainGame.unity
-    guid: 0ef003e9c012f1246b3e741feed43c89
-  - enabled: 1
-    path: Assets/Scene/Lobby.unity
-    guid: 280d35a27d2375b40aa5a81369ca3eb0
+    path: Assets/Scene/LoginPage.unity
+    guid: ce9cfb66c577fbd4098f6e83db5ef025
   - enabled: 1
     path: Assets/Scene/RegisterPage.unity
     guid: 8791bd4b55fced14683c1bafe23af0f1
   - enabled: 1
-    path: Assets/Scene/LoginPage.unity
-    guid: ce9cfb66c577fbd4098f6e83db5ef025
+    path: Assets/Scene/MainMenu.unity
+    guid: 2c1a98af441837d4690de146342fee7e
+  - enabled: 1
+    path: Assets/Scene/Lobby.unity
+    guid: 280d35a27d2375b40aa5a81369ca3eb0
+  - enabled: 1
+    path: Assets/Scene/MainGame.unity
+    guid: 0ef003e9c012f1246b3e741feed43c89
   - enabled: 1
     path: Assets/Scene/Achievements.unity
     guid: df404d47be0fc6f44808bc53841ff5c0
   - enabled: 1
     path: Assets/Scene/Leaderboard.unity
     guid: 27284c4ca2a2df744aaf4b7f037b9bea
+  - enabled: 0
+    path: 
+    guid: 00000000000000000000000000000000
+  - enabled: 0
+    path: Assets/Scene/Game.unity
+    guid: 9fc0d4010bbf28b4594072e72b8655ab
   m_configObjects: {}

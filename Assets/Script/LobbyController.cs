@@ -46,11 +46,11 @@ public class LobbyController : MonoBehaviourPunCallbacks
         }
     }
 
-    public void LeaveRoom()
+    public void LeaveRoom(string mainMenu)
     {
         PhotonNetwork.LeaveRoom();
 
-        PhotonNetwork.LoadLevel("Scene/MainMenu");
+        PhotonNetwork.LoadLevel(mainMenu);
 
     }
 

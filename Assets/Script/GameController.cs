@@ -54,7 +54,7 @@ public class GameController : MonoBehaviourPunCallbacks
     void Update()
     {
 
-        if (time <= 0 || currIndex < qs.questions.Length)
+        if (time <= 0 || currIndex >= qs.questions.Length)
         {
             GameOver();
         }
@@ -62,13 +62,13 @@ public class GameController : MonoBehaviourPunCallbacks
         {
             time -= Time.deltaTime;
             timer.text = time.ToString("F0");
-        }
 
-        question.text = qs.questions[currIndex].title;
+            question.text = qs.questions[currIndex].title;
 
-        for (int i = 0; i < 4; i++)
-        {
-            answers[i].GetComponentInChildren<Text>().text = qs.questions[currIndex].choices[i];
+            for (int i = 0; i < 4; i++)
+            {
+                answers[i].GetComponentInChildren<Text>().text = qs.questions[currIndex].choices[i];
+            }
         }
 
     }
@@ -78,6 +78,10 @@ public class GameController : MonoBehaviourPunCallbacks
     {
         string answer = EventSystem.current.currentSelectedGameObject.name;
 
+        for (int i = 0; i < 4; i++)
+        {
+            answers[i].GetComponentInChildren<Button>().interactable = false;
+        }
 
         if (int.Parse(answer) == qs.questions[currIndex].answer)
         {
@@ -86,11 +90,6 @@ public class GameController : MonoBehaviourPunCallbacks
         else
         {
             PV.RPC("Action", RpcTarget.AllBuffered, false, player.GetComponent<PhotonView>().ViewID, false);
-        }
-
-        for (int i = 0; i < 4; i++)
-        {
-            answers[i].GetComponentInChildren<Button>().interactable = false;
         }
 
     }
@@ -145,9 +144,13 @@ public class GameController : MonoBehaviourPunCallbacks
 
         if (nextQuestion[0] + nextQuestion[1] >= 2)
         {
+            for (int u = 0; u < 2; u++)
+            {
+                entities[u].GetComponentInChildren<Image>().sprite = Resources.Load<Sprite>("QuestionMark_Simple_Icons_UI");
+            }
+
             for (int i = 0; i < 4; i++)
             {
-                print("yessss");
                 answers[i].GetComponentInChildren<Button>().interactable = true;
             }
 
