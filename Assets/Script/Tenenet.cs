@@ -12,7 +12,7 @@ public class Tenenet : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        
+
     }
 
     // Update is called once per frame
@@ -76,13 +76,13 @@ public class Tenenet : MonoBehaviour
             Debug.Log(www.downloadHandler.text);
 
             if (r.status == 1)
-            {   
-                UserInfo.isLogin = true; 
+            {
+                UserInfo.isLogin = true;
                 UserInfo.username = r.message.id;
                 UserInfo.highest = int.Parse(r.message.score[0].value);
 
                 SceneManager.LoadScene("Scene/MainMenu");
-                
+
             }
 
         }
@@ -100,6 +100,8 @@ public class Tenenet : MonoBehaviour
 
         yield return www.SendWebRequest();
 
+        Response r = new Response();
+
         if (www.isNetworkError || www.isHttpError)
         {
             Debug.Log(www.error);
@@ -107,7 +109,18 @@ public class Tenenet : MonoBehaviour
         else
         {
 
+            r = JsonUtility.FromJson<Response>(www.downloadHandler.text);
             Debug.Log(www.downloadHandler.text);
+
+            if (r.status == 1)
+            {
+                UserInfo.isLogin = true;
+                UserInfo.username = r.message.id;
+                //UserInfo.highest = int.Parse(r.message.score[0].value);
+
+                SceneManager.LoadScene("Scene/MainMenu");
+
+            }
 
         }
     }
@@ -177,7 +190,7 @@ public class Tenenet : MonoBehaviour
     }
 
     [System.Serializable]
-    public class Response 
+    public class Response
     {
 
         public User message;
@@ -196,7 +209,7 @@ public class Tenenet : MonoBehaviour
     public class Score
     {
         public string metric_id, metric_name, metric_type, value;
- 
+
     }
 
 

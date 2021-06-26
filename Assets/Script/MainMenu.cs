@@ -10,16 +10,26 @@ public class MainMenu : MonoBehaviourPunCallbacks
 {
 
     public GameObject overlay;
+    public GameObject loading;
     public Text username;
 
     void Start()
     {
+        if (PhotonNetwork.IsConnected)
+        {
+            loading.SetActive(false);
+        }
+
+        GameObject.FindGameObjectWithTag("Music").GetComponent<MusicController>().PlayMusic();
         PhotonNetwork.ConnectUsingSettings();
     }
 
     public override void OnConnectedToMaster()
     {
-        Debug.Log("Connected to " + PhotonNetwork.CloudRegion);
+        //Debug.Log("Connected to " + PhotonNetwork.CloudRegion);
+
+        loading.SetActive(false);
+
         PhotonNetwork.NickName = UserInfo.username;
         username.text = PhotonNetwork.NickName;
         PhotonNetwork.AutomaticallySyncScene = true;
@@ -27,9 +37,6 @@ public class MainMenu : MonoBehaviourPunCallbacks
 
     public void CreateGame(string CreateName)
     {
-        //Debug.Log("CREATE");
-        //SceneManager.LoadScene(CreateName);
-
         string createdRoomID = RandomString();
         RoomOptions roomOptions = new RoomOptions() { IsVisible = false, IsOpen = true, MaxPlayers = 4, PublishUserId = true, BroadcastPropsChangeToAll = true };
         TypedLobby typedLobby = new TypedLobby(createdRoomID, LobbyType.Default);
@@ -50,11 +57,10 @@ public class MainMenu : MonoBehaviourPunCallbacks
 
     public void JoinGame()
     {
-        string roomID = GameObject.Find("RoomID").GetComponentInChildren<Text>().text;
+        string roomID = GameObject.Find("RoomID").GetComponentInChildren<Text>().text.ToUpper();
 
         if (roomID != "")
         {
-
             PhotonNetwork.JoinRoom(roomID);
 
         }
@@ -81,8 +87,14 @@ public class MainMenu : MonoBehaviourPunCallbacks
 
     }
     public void Logout(string LoginPage)
-    {   
+    {
         PhotonNetwork.Disconnect();
+
+        UserInfo.isLogin = false;
+        UserInfo.username = "";
+        UserInfo.highest = 0;
+
+
         SceneManager.LoadScene(LoginPage);
     }
     public void SettingGame(string SettingName)

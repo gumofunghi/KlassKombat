@@ -18,7 +18,8 @@ public class LobbyController : MonoBehaviourPunCallbacks
 
     void Start()
     {
-        roomIdText.text = PhotonNetwork.CurrentRoom.Name;
+        GameObject.FindGameObjectWithTag("Music").GetComponent<MusicController>().StopMusic();
+        roomIdText.text = "Room ID:  " + PhotonNetwork.CurrentRoom.Name;
 
         PV = GetComponent<PhotonView>();
 
