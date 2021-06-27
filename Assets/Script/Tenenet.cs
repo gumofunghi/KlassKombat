@@ -78,8 +78,8 @@ public class Tenenet : MonoBehaviour
             if (r.status == 1)
             {
                 UserInfo.isLogin = true;
-                UserInfo.username = r.message.id;
-                UserInfo.highest = int.Parse(r.message.score[0].value);
+                UserInfo.username = r.user.id;
+                UserInfo.highest = int.Parse(r.user.score[0].value);
 
                 SceneManager.LoadScene("Scene/MainMenu");
 
@@ -115,8 +115,8 @@ public class Tenenet : MonoBehaviour
             if (r.status == 1)
             {
                 UserInfo.isLogin = true;
-                UserInfo.username = r.message.id;
-                //UserInfo.highest = int.Parse(r.message.score[0].value);
+                UserInfo.username = r.user.id;
+                //UserInfo.highest = int.Parse(r.user.score[0].value);
 
                 SceneManager.LoadScene("Scene/MainMenu");
 
@@ -149,9 +149,9 @@ public class Tenenet : MonoBehaviour
 
     public IEnumerator updatePlayerScore()
     {
-        string alias = "jq123";
+        string alias = "loli123456";
         string id = "high_score";
-        int value = 100;
+        int value = 10;
 
         UnityWebRequest www = UnityWebRequest.Get(URL + "/insertPlayerActivity" + "?token=" + token + "&alias=" + alias + "&id=" + id + "&operator=" + "add" + "&value=" + value);
 
@@ -177,14 +177,28 @@ public class Tenenet : MonoBehaviour
 
         yield return www.SendWebRequest();
 
+        Response r = new Response();
+
         if (www.isNetworkError || www.isHttpError)
         {
             Debug.Log(www.error);
         }
         else
         {
-
             Debug.Log(www.downloadHandler.text);
+            r = JsonUtility.FromJson<Response>(www.downloadHandler.text);
+
+            if (r.status == 1)
+            {
+                //print(r.message.data.Length);
+                for(int i = 0; i < (r.message.data.Length); i++){
+
+                    string alias = r.message.data[i].alias;
+                    int rank = r.message.data[i].rank;
+
+                    //print(alias + "  " + rank);
+                }
+            }
 
         }
     }
@@ -193,9 +207,24 @@ public class Tenenet : MonoBehaviour
     public class Response
     {
 
-        public User message;
+        public User user;
         public int status;
+        public Message message;
 
+    }
+
+    
+    [System.Serializable]
+    public class Message
+    {
+        public Data[] data;
+    }
+
+    [System.Serializable]
+    public class Data
+    {
+        public string alias;
+        public int rank;
     }
 
     [System.Serializable]
@@ -211,7 +240,6 @@ public class Tenenet : MonoBehaviour
         public string metric_id, metric_name, metric_type, value;
 
     }
-
 
 
 }
