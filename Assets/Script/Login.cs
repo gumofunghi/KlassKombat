@@ -16,10 +16,15 @@ public class Login : MonoBehaviour
     void Start()
     {
         tenenet = GetComponent<Tenenet>();
-        LoginButton.onClick.AddListener(() => {
+        LoginButton.onClick.AddListener(() =>
+        {
             StartCoroutine(tenenet.playerLogin(UsernameInput.text, PasswordInput.text));
         });
 
+        if (GameObject.FindGameObjectWithTag("Music") != null)
+        {
+            GameObject.FindGameObjectWithTag("Music").GetComponent<MusicController>().StopMusic();
+        }
 
     }
 
@@ -30,5 +35,5 @@ public class Login : MonoBehaviour
         SceneManager.LoadScene("RegisterPage");
     }
 
-   
+
 }

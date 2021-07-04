@@ -22,7 +22,7 @@ public class TopBar : MonoBehaviour
     {
         for (int i = 0; i < 2; i++)
         {
-            HPBar[i].GetComponentInChildren<Text>().text = HPValue[i].ToString();
+            HPBar[i].GetComponent<Slider>().value = HPValue[i];
         }
     }
 

@@ -3,11 +3,12 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.Networking;
+using TMPro;
 
 public class Tenenet : MonoBehaviour
 {
     const string URL = "http://api.tenenet.net";
-    const string token = "7e8e7ff7131ea47672476ec9baea8b3a";
+    const string token = "fa217b002c55d2fcc51a1d4c7e3bddd7";
 
     // Start is called before the first frame update
     void Start()
@@ -58,7 +59,7 @@ public class Tenenet : MonoBehaviour
     public IEnumerator playerLogin(string username, string password)
     {
 
-        string alias = username + password;
+        string alias = username + "|" + password;
         UnityWebRequest www = UnityWebRequest.Get(URL + "/getPlayer" + "?token=" + token + "&alias=" + alias);
 
         yield return www.SendWebRequest();
@@ -78,12 +79,15 @@ public class Tenenet : MonoBehaviour
             if (r.status == 1)
             {
                 UserInfo.isLogin = true;
-                UserInfo.username = r.user.id;
-                UserInfo.highest = int.Parse(r.user.score[0].value);
+                UserInfo.username = r.message.id;
+        
+                //UserInfo.highest = int.Parse(r.user.score[0].value);
 
                 SceneManager.LoadScene("Scene/MainMenu");
 
             }
+
+
 
         }
 
@@ -91,7 +95,7 @@ public class Tenenet : MonoBehaviour
 
     public IEnumerator playerResgister(string username, string password, string firstname, string lastname)
     {
-        string alias = username + password;
+        string alias = username + "|" + password;
         string id = username;
         string fname = firstname;
         string lname = lastname;
@@ -115,7 +119,8 @@ public class Tenenet : MonoBehaviour
             if (r.status == 1)
             {
                 UserInfo.isLogin = true;
-                UserInfo.username = r.user.id;
+                UserInfo.username = r.message.id;
+    
                 //UserInfo.highest = int.Parse(r.user.score[0].value);
 
                 SceneManager.LoadScene("Scene/MainMenu");
@@ -190,13 +195,17 @@ public class Tenenet : MonoBehaviour
 
             if (r.status == 1)
             {
-                //print(r.message.data.Length);
-                for(int i = 0; i < (r.message.data.Length); i++){
+                GameObject[] rankings = GameObject.FindGameObjectsWithTag("Rank");
 
-                    string alias = r.message.data[i].alias;
-                    int rank = r.message.data[i].rank;
+                for (int i = 0; i < 5; i++)
+                {
+                    string[] p = r.message.data[i].alias.Split('|');
 
-                    //print(alias + "  " + rank);
+                    if (i <= r.message.data.Length)
+                    {
+                        rankings[i].transform.GetChild(1).gameObject.GetComponent<TMP_Text>().text = p[0];
+                    }
+
                 }
             }
 
@@ -207,17 +216,18 @@ public class Tenenet : MonoBehaviour
     public class Response
     {
 
-        public User user;
+        // public User user;
         public int status;
         public Message message;
 
     }
 
-    
     [System.Serializable]
     public class Message
     {
         public Data[] data;
+        public string id;
+        public Score[] score;
     }
 
     [System.Serializable]
@@ -225,13 +235,6 @@ public class Tenenet : MonoBehaviour
     {
         public string alias;
         public int rank;
-    }
-
-    [System.Serializable]
-    public class User
-    {
-        public string id;
-        public Score[] score;
     }
 
     [System.Serializable]

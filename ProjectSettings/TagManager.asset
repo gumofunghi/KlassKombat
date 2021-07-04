@@ -8,6 +8,7 @@ TagManager:
   - Home Team
   - Away Team
   - Music
+  - Rank
   layers:
   - Default
   - TransparentFX

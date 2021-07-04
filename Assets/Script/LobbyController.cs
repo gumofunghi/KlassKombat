@@ -18,7 +18,12 @@ public class LobbyController : MonoBehaviourPunCallbacks
 
     void Start()
     {
-        GameObject.FindGameObjectWithTag("Music").GetComponent<MusicController>().StopMusic();
+
+        if (GameObject.FindGameObjectWithTag("Music") != null)
+        {
+            GameObject.FindGameObjectWithTag("Music").GetComponent<MusicController>().StopMusic();
+        }
+
         roomIdText.text = "Room ID:  " + PhotonNetwork.CurrentRoom.Name;
 
         PV = GetComponent<PhotonView>();
@@ -83,16 +88,14 @@ public class LobbyController : MonoBehaviourPunCallbacks
 
         foreach (GameObject g in gs)
         {
-            Player Owner = g.GetPhotonView().Owner;
-
-            if ((bool)Owner.CustomProperties["home"])
+            if ((bool)g.GetPhotonView().Owner.CustomProperties["home"])
             {
-                g.GetComponentInChildren<Text>().text = Owner.NickName;
+                g.GetComponentInChildren<Text>().text = g.GetPhotonView().Owner.NickName;
                 g.transform.SetParent(homeTeam.transform, false);
             }
             else
             {
-                g.GetComponentInChildren<Text>().text = Owner.NickName;
+                g.GetComponentInChildren<Text>().text = g.GetPhotonView().Owner.NickName;
                 g.transform.SetParent(awayTeam.transform, false);
             }
 

@@ -7,12 +7,16 @@ using UnityEngine.UI;
 using Photon.Pun;
 using Photon.Realtime;
 using Hashtable = ExitGames.Client.Photon.Hashtable;
+using TMPro;
 
 public class GameController : MonoBehaviourPunCallbacks
 {
+    public GameObject camera;
     public Text question;
     public Button[] answers;
     public GameObject[] entities;
+    public GameObject[] fighters;
+    public GameObject gameOver;
     public Text timer;
     public QuestionRoot qs;
     public int currIndex;
@@ -20,6 +24,8 @@ public class GameController : MonoBehaviourPunCallbacks
     private GameObject player;
     float time = 180;
     private int[] nextQuestion = { 0, 0 }; // states: 0 - pending, 1 - incorrect, 2 - correct
+    private int[] score = { 0, 0 };
+    private const int dmg = 100;
 
     private Hashtable roomProperties = new Hashtable();
     void Awake()
@@ -56,7 +62,7 @@ public class GameController : MonoBehaviourPunCallbacks
 
         if (time <= 0 || currIndex >= qs.questions.Length)
         {
-            GameOver();
+            PV.RPC("GameOver", RpcTarget.AllBuffered, 2);
         }
         else
         {
@@ -127,9 +133,20 @@ public class GameController : MonoBehaviourPunCallbacks
         {
             result.GetComponentInChildren<Image>().sprite = Resources.Load<Sprite>("CheckMark_Simple_Icons_UI");
 
-            int newHP = TopBar.GetHP(team ? 0 : 1);
+            score[team ? 1 : 0] += 1;
 
-            TopBar.SetHP(newHP - 5, team ? 0 : 1);
+            // camera.GetComponent<Animator>().SetTrigger(!team ? "homeAction" : "awayAction");
+
+            Animator anim = fighters[team ? 1 : 0].GetComponent<Animator>();
+            anim.SetTrigger("attack");
+
+            int newHP = TopBar.GetHP(team ? 0 : 1);
+            TopBar.SetHP(newHP - dmg, team ? 0 : 1);
+
+            // check if opponent die
+            if (TopBar.GetHP(team ? 0 : 1) <= 0)
+                PV.RPC("GameOver", RpcTarget.AllBuffered, team ? 1 : 0);
+
 
             nextQuestion[team ? 0 : 1] = 2;
 
@@ -160,12 +177,31 @@ public class GameController : MonoBehaviourPunCallbacks
             currIndex++;
         }
 
-
     }
 
-    void GameOver()
+    [PunRPC]
+    void GameOver(int winner)
     {
-        print("we r end game now!");
+        gameOver.SetActive(true);
+
+        if (PV.IsMine)
+        {
+
+            if (winner < 2)
+            {
+                gameOver.transform.GetChild(1).GetChild(winner == 0 ? 2 : 3).GetChild(1).GetComponent<Text>().text = "WIN";
+
+            }
+
+            for (int i = 0; i < 1; i++)
+            {
+                gameOver.transform.GetChild(1).GetChild(i+2).GetChild(3).GetComponent<TMP_Text>().text = "Correct " + score[i].ToString();
+            }
+
+        }
+
+        //gameOver.transform.GetChild(1).GetComponent<TMP_Text>().text = time.ToString("F0");
+
     }
 
 }

@@ -5,7 +5,7 @@ using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 using Photon.Pun;
 using Photon.Realtime;
-
+using TMPro;
 public class MainMenu : MonoBehaviourPunCallbacks
 {
 

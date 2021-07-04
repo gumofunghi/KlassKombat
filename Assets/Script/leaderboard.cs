@@ -19,15 +19,15 @@ public class leaderboard : MonoBehaviour
         // StartCoroutine(tenenet.updatePlayerScore());
         StartCoroutine(tenenet.getScoreLeaderboard());
 
-        for(int i = 0; i < 5; i++){
+        // for(int i = 0; i < 5; i++){
 
-            GameObject newRow = Instantiate(rowPrefab, rowsParent);
-            TMP_Text[] texts = newRow.GetComponentsInChildren<TMP_Text>();
-            texts[0].text = "Rank";
-            texts[1].text = "Alias";
-            texts[2].text = "Score";
+        //     GameObject newRow = Instantiate(rowPrefab, rowsParent);
+        //     TMP_Text[] texts = newRow.GetComponentsInChildren<TMP_Text>();
+        //     texts[0].text = "Rank";
+        //     texts[1].text = "Alias";
+        //     texts[2].text = "Score";
 
-        }
+        // }
 
 
     }
