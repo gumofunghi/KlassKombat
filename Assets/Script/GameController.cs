@@ -25,7 +25,7 @@ public class GameController : MonoBehaviourPunCallbacks
     float time = 180;
     private int[] nextQuestion = { 0, 0 }; // states: 0 - pending, 1 - incorrect, 2 - correct
     private int[] score = { 0, 0 };
-    private const int dmg = 100;
+    private const int dmg = 10;
 
     private Hashtable roomProperties = new Hashtable();
     void Awake()
@@ -99,6 +99,37 @@ public class GameController : MonoBehaviourPunCallbacks
         }
 
     }
+    public int Crit()
+    {
+
+        float critChance = 0.2f;
+
+        float randValue = Random.value;
+
+        if (randValue < (1f - critChance))
+        {
+            return 1;
+        }
+        else
+        {
+
+            return 2;
+        }
+    }
+
+
+    public IEnumerator WaitForAttacks(int duration, int newHP, bool oppo)
+    {
+        yield return new WaitForSeconds(duration);
+
+        fighters[oppo ? 1 : 0].GetComponent<Animator>().SetTrigger("attack");
+
+        TopBar.SetHP(newHP, oppo ? 0 : 1);
+
+        // check if opponent die
+        if (TopBar.GetHP(oppo ? 0 : 1) <= 0)
+            PV.RPC("GameOver", RpcTarget.AllBuffered, oppo ? 1 : 0);
+    }
 
     [PunRPC]
     void DisplayTeam()
@@ -124,7 +155,7 @@ public class GameController : MonoBehaviourPunCallbacks
     }
 
     [PunRPC]
-    void Action(bool isSuccess, int p, bool team)
+    void Action(bool isSuccess, int p, bool oppo)
     {
 
         GameObject result = PhotonView.Find(p).gameObject;
@@ -133,29 +164,30 @@ public class GameController : MonoBehaviourPunCallbacks
         {
             result.GetComponentInChildren<Image>().sprite = Resources.Load<Sprite>("CheckMark_Simple_Icons_UI");
 
-            score[team ? 1 : 0] += 1;
+            int crit = Crit();
 
-            // camera.GetComponent<Animator>().SetTrigger(!team ? "homeAction" : "awayAction");
+            int HP = TopBar.GetHP(oppo ? 0 : 1);
 
-            Animator anim = fighters[team ? 1 : 0].GetComponent<Animator>();
-            anim.SetTrigger("attack");
+            if (crit >= 2)
+            {
+                camera.GetComponent<Animator>().SetTrigger("homeAction");
+                StartCoroutine(WaitForAttacks(2, HP - dmg * crit, oppo));
+            }
+            else
+            {
+                StartCoroutine(WaitForAttacks(0, HP - dmg * crit, oppo));
+            }
 
-            int newHP = TopBar.GetHP(team ? 0 : 1);
-            TopBar.SetHP(newHP - dmg, team ? 0 : 1);
+            score[oppo ? 1 : 0] += 1;
 
-            // check if opponent die
-            if (TopBar.GetHP(team ? 0 : 1) <= 0)
-                PV.RPC("GameOver", RpcTarget.AllBuffered, team ? 1 : 0);
-
-
-            nextQuestion[team ? 0 : 1] = 2;
+            nextQuestion[oppo ? 0 : 1] = 2;
 
         }
         else
         {
             result.GetComponentInChildren<Image>().sprite = Resources.Load<Sprite>("Cross_Simple_Icons_UI");
 
-            nextQuestion[team ? 0 : 1] = 1;
+            nextQuestion[oppo ? 0 : 1] = 1;
         }
 
 
@@ -182,6 +214,7 @@ public class GameController : MonoBehaviourPunCallbacks
     [PunRPC]
     void GameOver(int winner)
     {
+
         gameOver.SetActive(true);
 
         if (PV.IsMine)
@@ -195,7 +228,8 @@ public class GameController : MonoBehaviourPunCallbacks
 
             for (int i = 0; i < 1; i++)
             {
-                gameOver.transform.GetChild(1).GetChild(i+2).GetChild(3).GetComponent<TMP_Text>().text = "Correct " + score[i].ToString();
+                fighters[i].GetComponent<Animator>().SetTrigger("end");
+                gameOver.transform.GetChild(1).GetChild(i + 2).GetChild(3).GetComponent<TMP_Text>().text = "Correct " + score[i].ToString();
             }
 
         }

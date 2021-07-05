@@ -10,7 +10,7 @@ public class PlayerInfo : MonoBehaviourPunCallbacks
     public Text nameText;
 
     void Start()
-    {print("1f23");
+    {
         nameText.text = gameObject.GetPhotonView().Owner.NickName;
 
     }
