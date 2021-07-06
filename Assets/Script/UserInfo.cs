@@ -53,6 +53,7 @@ public class UserInfo : MonoBehaviour
     }
 
     public static bool isLogin;
+    public static string alias;
     public static string username;
     public static int highest;
 

@@ -446,7 +446,7 @@ GameObject:
   - component: {fileID: 140104491}
   m_Layer: 5
   m_Name: Row
-  m_TagString: Untagged
+  m_TagString: Achievement
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -1819,6 +1819,7 @@ GameObject:
   - component: {fileID: 1030066792}
   - component: {fileID: 1030066791}
   - component: {fileID: 1030066795}
+  - component: {fileID: 1030066796}
   m_Layer: 5
   m_Name: Canvas
   m_TagString: Untagged
@@ -1917,6 +1918,18 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 06d4d53797341b142bb8993b103cbc57, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &1030066796
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1030066790}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ca7166fad9b9fa14fb40f930cd0dd4cd, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
 --- !u!1 &1112888044
@@ -2247,7 +2260,7 @@ GameObject:
   - component: {fileID: 1210865785}
   m_Layer: 5
   m_Name: Row (1)
-  m_TagString: Untagged
+  m_TagString: Achievement
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -2635,7 +2648,7 @@ GameObject:
   - component: {fileID: 1402446401}
   m_Layer: 5
   m_Name: Row (2)
-  m_TagString: Untagged
+  m_TagString: Achievement
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0

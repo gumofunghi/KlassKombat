@@ -92,6 +92,7 @@ public class MainMenu : MonoBehaviourPunCallbacks
 
         UserInfo.isLogin = false;
         UserInfo.username = "";
+        UserInfo.alias = "";
         UserInfo.highest = 0;
 
 

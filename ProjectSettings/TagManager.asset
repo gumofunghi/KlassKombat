@@ -9,6 +9,7 @@ TagManager:
   - Away Team
   - Music
   - Rank
+  - Achievement
   layers:
   - Default
   - TransparentFX

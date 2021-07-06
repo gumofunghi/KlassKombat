@@ -80,7 +80,7 @@ public class Tenenet : MonoBehaviour
             {
                 UserInfo.isLogin = true;
                 UserInfo.username = r.message.id;
-        
+                UserInfo.alias = alias;
                 //UserInfo.highest = int.Parse(r.user.score[0].value);
 
                 SceneManager.LoadScene("Scene/MainMenu");
@@ -120,6 +120,7 @@ public class Tenenet : MonoBehaviour
             {
                 UserInfo.isLogin = true;
                 UserInfo.username = r.message.id;
+                UserInfo.alias = alias;
     
                 //UserInfo.highest = int.Parse(r.user.score[0].value);
 
@@ -130,14 +131,14 @@ public class Tenenet : MonoBehaviour
         }
     }
 
-    // public IEnumerator createMetric(){
-    //     string metric = "high_score";
-    //     string id = "high_score";
-    //     string name = "high_score";
+    // public IEnumerator updatePlayerAchievement(){
+    //     string metric = "player_achievement";
+    //     // string id = "high_score";
+    //     // string name = "high_score";
     //     // string name = "high_score";
 
 
-    //     UnityWebRequest www = UnityWebRequest.Get(URL + "/insertPlayerActivity" + "?token=" + token + "&metric=" + metric + "&id=" + id + "&operator=add" + "&value" + value);
+    //     UnityWebRequest www = UnityWebRequest.Get(URL + "/insertPlayerActivity" + "?token=" + token + "&metric=" + metric + "&id=" + id + "&operator=add" + "&value=" + value);
 
     //     yield return www.SendWebRequest();
 
@@ -154,9 +155,9 @@ public class Tenenet : MonoBehaviour
 
     public IEnumerator updatePlayerScore()
     {
-        string alias = "loli123456";
+        string alias = "ramen|123456";
         string id = "high_score";
-        int value = 10;
+        int value = 30;
 
         UnityWebRequest www = UnityWebRequest.Get(URL + "/insertPlayerActivity" + "?token=" + token + "&alias=" + alias + "&id=" + id + "&operator=" + "add" + "&value=" + value);
 
@@ -176,7 +177,7 @@ public class Tenenet : MonoBehaviour
 
     public IEnumerator getScoreLeaderboard()
     {
-        string id = "lb_score";
+        string id = "lboard_score";
 
         UnityWebRequest www = UnityWebRequest.Get(URL + "/getLeaderboard" + "?token=" + token + "&id=" + id);
 
@@ -199,12 +200,64 @@ public class Tenenet : MonoBehaviour
 
                 for (int i = 0; i < 5; i++)
                 {
+                    
+                    
                     string[] p = r.message.data[i].alias.Split('|');
+                    string ranking = r.message.data[i].rank;
+
+                    // UnityWebRequest www_player = UnityWebRequest.Get(URL + "/getPlayer" + "?token=" + token + "&alias=" + r.message.data[i].alias);
+                    // Response player = new Response();
+                    // player = JsonUtility.FromJson<Response>(www_player.downloadHandler.text);
+
+                    // string score = player.message.data[0].score[0].value;
 
                     if (i <= r.message.data.Length)
                     {
+                        rankings[i].transform.GetChild(0).gameObject.GetComponent<TMP_Text>().text = ranking;
                         rankings[i].transform.GetChild(1).gameObject.GetComponent<TMP_Text>().text = p[0];
+                        rankings[i].transform.GetChild(2).gameObject.GetComponent<TMP_Text>().text = p[0];
                     }
+
+                }
+            }
+
+        }
+    }
+
+    public IEnumerator getPlayerAchievements()
+    {
+        //string alias = UserInfo.alias;
+        string alias = "sushi|123456";
+
+
+
+        UnityWebRequest www = UnityWebRequest.Get(URL + "/getPlayer" + "?token=" + token + "&alias=" + alias);
+
+        yield return www.SendWebRequest();
+
+        Response r = new Response();
+
+        if (www.isNetworkError || www.isHttpError)
+        {
+            Debug.Log(www.error);
+        }
+        else
+        {
+            Debug.Log(www.downloadHandler.text);
+            r = JsonUtility.FromJson<Response>(www.downloadHandler.text);
+
+            if (r.status == 1)
+            {
+                GameObject[] achievements = GameObject.FindGameObjectsWithTag("Achievement");
+
+                string[] p = r.message.score[5].value.Split(',');
+
+                for (int i = 0; i < p.Length ; i++)
+                {
+                    
+                    if(p[i]=="a1")
+                        achievements[0].transform.GetChild(2).gameObject.GetComponent<TMP_Text>().text = "Achieved";
+                    
 
                 }
             }
@@ -227,6 +280,7 @@ public class Tenenet : MonoBehaviour
     {
         public Data[] data;
         public string id;
+        public string alias;
         public Score[] score;
     }
 
@@ -234,7 +288,8 @@ public class Tenenet : MonoBehaviour
     public class Data
     {
         public string alias;
-        public int rank;
+        public string rank;
+        public Score[] score;
     }
 
     [System.Serializable]
