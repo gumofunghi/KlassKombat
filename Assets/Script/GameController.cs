@@ -8,10 +8,10 @@ using Photon.Pun;
 using Photon.Realtime;
 using Hashtable = ExitGames.Client.Photon.Hashtable;
 using TMPro;
-
+using UnityEngine.SceneManagement;
 public class GameController : MonoBehaviourPunCallbacks
 {
-    public GameObject camera;
+    public GameObject gameCamera;
     public Text question;
     public Button[] answers;
     public GameObject[] entities;
@@ -60,9 +60,11 @@ public class GameController : MonoBehaviourPunCallbacks
     void Update()
     {
 
-        if (time <= 0 || currIndex >= qs.questions.Length)
+        // if (time <= 0 || currIndex >= qs.questions.Length)
+        if (currIndex >= qs.questions.Length)
         {
-            PV.RPC("GameOver", RpcTarget.AllBuffered, 2);
+            //if (PhotonNetwork.IsMasterClient)
+                //PV.RPC("GameOver", RpcTarget.AllBuffered, 2);
         }
         else
         {
@@ -70,7 +72,6 @@ public class GameController : MonoBehaviourPunCallbacks
             timer.text = time.ToString("F0");
 
             question.text = qs.questions[currIndex].title;
-
             for (int i = 0; i < 4; i++)
             {
                 answers[i].GetComponentInChildren<Text>().text = qs.questions[currIndex].choices[i];
@@ -91,18 +92,20 @@ public class GameController : MonoBehaviourPunCallbacks
 
         if (int.Parse(answer) == qs.questions[currIndex].answer)
         {
-            PV.RPC("Action", RpcTarget.AllBuffered, true, player.GetComponent<PhotonView>().ViewID, !(bool)PhotonNetwork.LocalPlayer.CustomProperties["home"]);
+            int crit = Crit();
+
+            PV.RPC("Action", RpcTarget.AllBuffered, true, player.GetComponent<PhotonView>().ViewID, crit, !(bool)PhotonNetwork.LocalPlayer.CustomProperties["home"]);
         }
         else
         {
-            PV.RPC("Action", RpcTarget.AllBuffered, false, player.GetComponent<PhotonView>().ViewID, false);
+            PV.RPC("Action", RpcTarget.AllBuffered, false, player.GetComponent<PhotonView>().ViewID, 0, false);
         }
 
     }
     public int Crit()
     {
 
-        float critChance = 0.2f;
+        float critChance = 0.4f;
 
         float randValue = Random.value;
 
@@ -117,8 +120,7 @@ public class GameController : MonoBehaviourPunCallbacks
         }
     }
 
-
-    public IEnumerator WaitForAttacks(int duration, int newHP, bool oppo)
+    public IEnumerator WaitForAttacks(float duration, int newHP, bool oppo)
     {
         yield return new WaitForSeconds(duration);
 
@@ -128,7 +130,20 @@ public class GameController : MonoBehaviourPunCallbacks
 
         // check if opponent die
         if (TopBar.GetHP(oppo ? 0 : 1) <= 0)
+        {
+            print("someone dieded");
             PV.RPC("GameOver", RpcTarget.AllBuffered, oppo ? 1 : 0);
+        }
+
+        score[oppo ? 1 : 0] += 1;
+        UpdateQuestion();
+
+
+    }
+    public void BackButton(string page)
+    {
+        PhotonNetwork.LeaveRoom();
+        SceneManager.LoadScene(page);
     }
 
     [PunRPC]
@@ -155,7 +170,7 @@ public class GameController : MonoBehaviourPunCallbacks
     }
 
     [PunRPC]
-    void Action(bool isSuccess, int p, bool oppo)
+    void Action(bool isSuccess, int p, int crit, bool oppo)
     {
 
         GameObject result = PhotonView.Find(p).gameObject;
@@ -164,52 +179,57 @@ public class GameController : MonoBehaviourPunCallbacks
         {
             result.GetComponentInChildren<Image>().sprite = Resources.Load<Sprite>("CheckMark_Simple_Icons_UI");
 
-            int crit = Crit();
-
             int HP = TopBar.GetHP(oppo ? 0 : 1);
 
             if (crit >= 2)
             {
-                camera.GetComponent<Animator>().SetTrigger("homeAction");
-                StartCoroutine(WaitForAttacks(2, HP - dmg * crit, oppo));
+                gameCamera.GetComponent<Animator>().SetTrigger(oppo ? "awayAction" : "homeAction");
+                StartCoroutine(WaitForAttacks(1f, HP - dmg * crit, oppo));
             }
             else
             {
                 StartCoroutine(WaitForAttacks(0, HP - dmg * crit, oppo));
             }
 
-            score[oppo ? 1 : 0] += 1;
-
-            nextQuestion[oppo ? 0 : 1] = 2;
 
         }
         else
         {
             result.GetComponentInChildren<Image>().sprite = Resources.Load<Sprite>("Cross_Simple_Icons_UI");
 
-            nextQuestion[oppo ? 0 : 1] = 1;
-        }
+            nextQuestion[oppo ? 1 : 0] = 1;
 
-
-        if (nextQuestion[0] + nextQuestion[1] >= 2)
-        {
-            for (int u = 0; u < 2; u++)
+            if (nextQuestion[0] + nextQuestion[1] >= 2)
             {
-                entities[u].GetComponentInChildren<Image>().sprite = Resources.Load<Sprite>("QuestionMark_Simple_Icons_UI");
+                UpdateQuestion();
+
             }
 
-            for (int i = 0; i < 4; i++)
-            {
-                answers[i].GetComponentInChildren<Button>().interactable = true;
-            }
-
-            nextQuestion[0] = 0;
-            nextQuestion[1] = 0;
-
-            currIndex++;
         }
+
 
     }
+
+    void UpdateQuestion()
+    {
+
+        for (int u = 0; u < 2; u++)
+        {
+            entities[u].GetComponentInChildren<Image>().sprite = Resources.Load<Sprite>("QuestionMark_Simple_Icons_UI");
+            nextQuestion[u] = 0;
+        }
+
+        for (int i = 0; i < 4; i++)
+        {
+            answers[i].GetComponentInChildren<Button>().interactable = true;
+        }
+
+
+        currIndex++;
+        print(currIndex + "   " + qs.questions.Length);
+
+    }
+
 
     [PunRPC]
     void GameOver(int winner)
@@ -217,30 +237,25 @@ public class GameController : MonoBehaviourPunCallbacks
 
         gameOver.SetActive(true);
 
-        if (PV.IsMine)
+
+        if (winner < 2)
         {
+            gameOver.transform.GetChild(1).GetChild(winner == 0 ? 2 : 3).GetChild(1).GetComponent<Text>().text = "WIN";
 
-            if (winner < 2)
-            {
-                gameOver.transform.GetChild(1).GetChild(winner == 0 ? 2 : 3).GetChild(1).GetComponent<Text>().text = "WIN";
+        }
 
-            }
-
-            for (int i = 0; i < 1; i++)
-            {
-                fighters[i].GetComponent<Animator>().SetTrigger("end");
-                gameOver.transform.GetChild(1).GetChild(i + 2).GetChild(3).GetComponent<TMP_Text>().text = "Correct " + score[i].ToString();
-            }
-
+        for (int i = 0; i < 1; i++)
+        {
+            fighters[i].GetComponent<Animator>().SetTrigger("end");
+            gameOver.transform.GetChild(1).GetChild(i + 2).GetChild(3).GetComponent<TMP_Text>().text = "Correct " + score[i].ToString();
         }
 
         //gameOver.transform.GetChild(1).GetComponent<TMP_Text>().text = time.ToString("F0");
 
+
     }
 
 }
-
-
 [System.Serializable]
 public class Question
 {

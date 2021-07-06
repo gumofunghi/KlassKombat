@@ -51,7 +51,7 @@ public class MainMenu : MonoBehaviourPunCallbacks
 
     public void JoinGameDialog()
     {
-        overlay.SetActive(!overlay.active);
+        overlay.SetActive(!overlay.activeSelf);
 
     }
 
@@ -92,8 +92,8 @@ public class MainMenu : MonoBehaviourPunCallbacks
 
         UserInfo.isLogin = false;
         UserInfo.username = "";
+        UserInfo.alias = "";
         UserInfo.highest = 0;
-
 
         SceneManager.LoadScene(LoginPage);
     }

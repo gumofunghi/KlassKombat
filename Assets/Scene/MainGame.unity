@@ -2538,7 +2538,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7533a08febe3262469f6408549d7abec, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  camera: {fileID: 1922367315}
+  gameCamera: {fileID: 1922367315}
   question: {fileID: 1164608883}
   answers:
   - {fileID: 1057514457}
@@ -3282,15 +3282,15 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 0}
-        m_MethodName: 
-        m_Mode: 1
+      - m_Target: {fileID: 710053519}
+        m_MethodName: BackButton
+        m_Mode: 5
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: 
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
           m_IntArgument: 0
           m_FloatArgument: 0
-          m_StringArgument: 
+          m_StringArgument: MainMenu
           m_BoolArgument: 0
         m_CallState: 2
 --- !u!114 &784098663
@@ -4512,7 +4512,6 @@ GameObject:
   m_Component:
   - component: {fileID: 1082859406}
   - component: {fileID: 1082859408}
-  - component: {fileID: 1082859407}
   m_Layer: 5
   m_Name: HP Away
   m_TagString: Untagged
@@ -4541,18 +4540,6 @@ RectTransform:
   m_AnchoredPosition: {x: 500, y: 0}
   m_SizeDelta: {x: 760, y: 100}
   m_Pivot: {x: 0.5, y: 0.5}
---- !u!114 &1082859407
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1082859405}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: fdbe11338aa46094dad1166ed9c1b69d, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!114 &1082859408
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -4844,7 +4831,6 @@ GameObject:
   m_Component:
   - component: {fileID: 1119154035}
   - component: {fileID: 1119154037}
-  - component: {fileID: 1119154036}
   m_Layer: 5
   m_Name: HP Home
   m_TagString: Untagged
@@ -4873,18 +4859,6 @@ RectTransform:
   m_AnchoredPosition: {x: -500, y: 0}
   m_SizeDelta: {x: 760, y: 100}
   m_Pivot: {x: 0.5, y: 0.5}
---- !u!114 &1119154036
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1119154034}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: fdbe11338aa46094dad1166ed9c1b69d, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!114 &1119154037
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -5606,7 +5580,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 0, g: 0, b: 0, a: 0.46666667}
+  m_Color: {r: 0, g: 0, b: 0, a: 0.7647059}
   m_RaycastTarget: 1
   m_OnCullStateChanged:
     m_PersistentCalls:
@@ -6159,7 +6133,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: 'Hp remains: 10'
+  m_text: 'Hp remains: 0'
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 80b23cca39590d3418ba12d4247cf2d7, type: 2}
   m_sharedMaterial: {fileID: -3672131961668330940, guid: 80b23cca39590d3418ba12d4247cf2d7,
@@ -6784,7 +6758,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: Correct 5
+  m_text: Correct 0
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 80b23cca39590d3418ba12d4247cf2d7, type: 2}
   m_sharedMaterial: {fileID: -3672131961668330940, guid: 80b23cca39590d3418ba12d4247cf2d7,
@@ -7843,7 +7817,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: Correct 5
+  m_text: Correct 0
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 80b23cca39590d3418ba12d4247cf2d7, type: 2}
   m_sharedMaterial: {fileID: -3672131961668330940, guid: 80b23cca39590d3418ba12d4247cf2d7,
@@ -8075,7 +8049,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: 'Hp remains: 10'
+  m_text: 'Hp remains: 0'
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 80b23cca39590d3418ba12d4247cf2d7, type: 2}
   m_sharedMaterial: {fileID: -3672131961668330940, guid: 80b23cca39590d3418ba12d4247cf2d7,
@@ -8217,7 +8191,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 0.00024414062, y: 0}
+  m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: -106.95947, y: -54.45459}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!1 &1831859768
@@ -8697,7 +8671,7 @@ Camera:
   m_Enabled: 1
   serializedVersion: 2
   m_ClearFlags: 1
-  m_BackGroundColor: {r: 0.19215687, g: 0.3019608, b: 0.4745098, a: 0}
+  m_BackGroundColor: {r: 0.26415092, g: 0.26415092, b: 0.26415092, a: 0}
   m_projectionMatrixMode: 1
   m_GateFitMode: 2
   m_FOVAxisMode: 0
