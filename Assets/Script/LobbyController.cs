@@ -46,10 +46,10 @@ public class LobbyController : MonoBehaviourPunCallbacks
 
     public override void OnPlayerPropertiesUpdate(Player target, Hashtable changedProps)
     {
-        if (PV.IsMine)
-        {
-            PV.RPC("TeamAssignment", RpcTarget.AllBuffered);
-        }
+        // if (PV.IsMine)
+        // {print("sda");
+        PV.RPC("TeamAssignment", RpcTarget.AllBuffered, PlayerName.GetComponent<PhotonView>().ViewID, PhotonNetwork.IsMasterClient);
+        // }
     }
 
     public void LeaveRoom(string mainMenu)
@@ -82,23 +82,41 @@ public class LobbyController : MonoBehaviourPunCallbacks
     }
 
     [PunRPC]
-    void TeamAssignment()
+    void TeamAssignment(int id, bool isMaster)
     {
-        GameObject[] gs = GameObject.FindGameObjectsWithTag("PlayerName");
+        // GameObject[] gs = GameObject.FindGameObjectsWithTag("PlayerName");
 
-        foreach (GameObject g in gs)
+        // foreach (GameObject g in gs)
+        // {
+        //     if ((bool)g.GetPhotonView().Owner.CustomProperties["home"])
+        //     {
+        //         g.GetComponentInChildren<Text>().text = g.GetPhotonView().Owner.NickName;
+        //         g.transform.SetParent(homeTeam.transform, false);
+        //     }
+        //     else
+        //     {
+        //         g.GetComponentInChildren<Text>().text = g.GetPhotonView().Owner.NickName;
+        //         g.transform.SetParent(awayTeam.transform, false);
+        //     }
+
+
+        // }
+        GameObject g = PhotonView.Find(id).gameObject;
+
+        if ((bool)g.GetPhotonView().Owner.CustomProperties["home"])
         {
-            if ((bool)g.GetPhotonView().Owner.CustomProperties["home"])
-            {
-                g.GetComponentInChildren<Text>().text = g.GetPhotonView().Owner.NickName;
-                g.transform.SetParent(homeTeam.transform, false);
-            }
-            else
-            {
-                g.GetComponentInChildren<Text>().text = g.GetPhotonView().Owner.NickName;
-                g.transform.SetParent(awayTeam.transform, false);
-            }
+            g.GetComponentInChildren<Text>().text = g.GetPhotonView().Owner.NickName;
+            g.transform.SetParent(homeTeam.transform, false);
+        }
+        else
+        {
+            g.GetComponentInChildren<Text>().text = g.GetPhotonView().Owner.NickName;
+            g.transform.SetParent(awayTeam.transform, false);
+        }
 
+        if (isMaster)
+        {
+            g.GetComponentInChildren<Image>().gameObject.SetActive(true);
         }
 
     }
