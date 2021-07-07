@@ -66,11 +66,11 @@ public class GameController : MonoBehaviourPunCallbacks
         // if (time <= 0 || currIndex >= qs.questions.Length)
         if (currIndex >= qs.questions.Length)
         {
-            if (PhotonNetwork.IsMasterClient)
-            {
+            // if (PhotonNetwork.IsMasterClient)
+            // {
                 print(score[0] + " " + score[1]);
                 PV.RPC("GameOver", RpcTarget.AllBuffered);
-            }
+            // }
         }
         else
         {
@@ -260,19 +260,29 @@ public class GameController : MonoBehaviourPunCallbacks
 
         }
 
+        
         for (int i = 0; i < 2; i++)
         {   
 
             int total = (score[i] + (winner == i ? 2 : 0)) * 10;
-
-            tenenet = GetComponent<Tenenet>();
-            StartCoroutine(tenenet.updatePlayerScore(UserInfo.alias, total, UserInfo.highest ));
             
+
+            if(PV.IsMine && UserInfo.highest < total){
+            
+                tenenet = GetComponent<Tenenet>();
+                StartCoroutine(tenenet.updatePlayerScore(UserInfo.alias, total, UserInfo.highest )); 
+                UserInfo.highest = total;
+                
+            }
 
             fighters[i].GetComponent<Animator>().SetTrigger("end");
             gameOver.transform.GetChild(1).GetChild(i + 2).GetChild(2).GetComponent<TMP_Text>().text = "Correct " + score[i].ToString();
             gameOver.transform.GetChild(1).GetChild(i + 2).GetChild(3).GetComponent<TMP_Text>().text = "Score " + total.ToString();
         }
+
+
+            
+            
 
         //gameOver.transform.GetChild(1).GetComponent<TMP_Text>().text = time.ToString("F0");
 
