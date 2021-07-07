@@ -26,8 +26,8 @@ public class GameController : MonoBehaviourPunCallbacks
     private int[] nextQuestion = { 0, 0 }; // states: 0 - pending, 1 - incorrect, 2 - correct
     private int[] score = { 0, 0 };
     private const int dmg = 20;
-
     private Hashtable roomProperties = new Hashtable();
+
     void Awake()
     {
         for (int i = 0; i < 2; i++)
@@ -209,7 +209,7 @@ public class GameController : MonoBehaviourPunCallbacks
             result.GetComponentInChildren<Image>().sprite = Resources.Load<Sprite>("Cross_Simple_Icons_UI");
 
             nextQuestion[oppo ? 1 : 0] = 1;
-            print(nextQuestion[0] + "  " + nextQuestion[1]);
+         
             if (nextQuestion[0] + nextQuestion[1] >= 2)
             {
                 UpdateQuestion();
@@ -217,8 +217,6 @@ public class GameController : MonoBehaviourPunCallbacks
             }
 
         }
-
-
     }
 
     void UpdateQuestion()
