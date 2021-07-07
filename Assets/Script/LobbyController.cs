@@ -1,4 +1,4 @@
-﻿using System.Collections;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -47,9 +47,10 @@ public class LobbyController : MonoBehaviourPunCallbacks
     public override void OnPlayerPropertiesUpdate(Player target, Hashtable changedProps)
     {
         // if (PV.IsMine)
-        // {print("sda");
-        PV.RPC("TeamAssignment", RpcTarget.AllBuffered, PlayerName.GetComponent<PhotonView>().ViewID, PhotonNetwork.IsMasterClient);
+        // {
+        PV.RPC("TeamAssignment", RpcTarget.AllBuffered, PlayerName.GetComponent<PhotonView>().ViewID, target);
         // }
+
     }
 
     public void LeaveRoom(string mainMenu)
@@ -82,25 +83,9 @@ public class LobbyController : MonoBehaviourPunCallbacks
     }
 
     [PunRPC]
-    void TeamAssignment(int id, bool isMaster)
+    void TeamAssignment(int id, Player p)
     {
-        // GameObject[] gs = GameObject.FindGameObjectsWithTag("PlayerName");
 
-        // foreach (GameObject g in gs)
-        // {
-        //     if ((bool)g.GetPhotonView().Owner.CustomProperties["home"])
-        //     {
-        //         g.GetComponentInChildren<Text>().text = g.GetPhotonView().Owner.NickName;
-        //         g.transform.SetParent(homeTeam.transform, false);
-        //     }
-        //     else
-        //     {
-        //         g.GetComponentInChildren<Text>().text = g.GetPhotonView().Owner.NickName;
-        //         g.transform.SetParent(awayTeam.transform, false);
-        //     }
-
-
-        // }
         GameObject g = PhotonView.Find(id).gameObject;
 
         if ((bool)g.GetPhotonView().Owner.CustomProperties["home"])
@@ -113,11 +98,13 @@ public class LobbyController : MonoBehaviourPunCallbacks
             g.GetComponentInChildren<Text>().text = g.GetPhotonView().Owner.NickName;
             g.transform.SetParent(awayTeam.transform, false);
         }
-
-        // if (isMaster)
-        // {
-        //     g.GetComponentInChildren<Image>().gameObject.SetActive(true);
-        // }
+        // print(g.GetPhotonView().Owner.NickName);
+        if (g.GetPhotonView().Owner.IsMasterClient)
+        {
+            // print(id + " " + g.GetPhotonView().Owner.NickName);
+            g.transform.GetChild(1).gameObject.SetActive(true);
+        }
+        else { g.transform.GetChild(1).gameObject.SetActive(false); }
 
     }
 

@@ -25,7 +25,7 @@ public class GameController : MonoBehaviourPunCallbacks
     float time = 180;
     private int[] nextQuestion = { 0, 0 }; // states: 0 - pending, 1 - incorrect, 2 - correct
     private int[] score = { 0, 0 };
-    private const int dmg = 10;
+    private const int dmg = 20;
 
     private Hashtable roomProperties = new Hashtable();
     void Awake()
@@ -64,7 +64,7 @@ public class GameController : MonoBehaviourPunCallbacks
         if (currIndex >= qs.questions.Length)
         {
             if (PhotonNetwork.IsMasterClient)
-                PV.RPC("GameOver", RpcTarget.AllBuffered, 2);
+                PV.RPC("GameOver", RpcTarget.AllBuffered);
         }
         else
         {
@@ -132,7 +132,7 @@ public class GameController : MonoBehaviourPunCallbacks
         if (TopBar.GetHP(oppo ? 0 : 1) <= 0)
         {
             print("someone dieded");
-            // PV.RPC("GameOver", RpcTarget.AllBuffered, oppo ? 1 : 0);
+            PV.RPC("GameOver", RpcTarget.AllBuffered);
         }
 
         score[oppo ? 1 : 0] += 1;
@@ -183,7 +183,7 @@ public class GameController : MonoBehaviourPunCallbacks
             if (crit >= 2)
             {
                 gameCamera.GetComponent<Animator>().SetTrigger(oppo ? "awayAction" : "homeAction");
-                StartCoroutine(WaitForAttacks(1f, HP - dmg * crit, oppo));
+                StartCoroutine(WaitForAttacks(2f, HP - dmg * crit, oppo));
             }
             else
             {
@@ -197,7 +197,7 @@ public class GameController : MonoBehaviourPunCallbacks
             result.GetComponentInChildren<Image>().sprite = Resources.Load<Sprite>("Cross_Simple_Icons_UI");
 
             nextQuestion[oppo ? 1 : 0] = 1;
-            print(nextQuestion[0] + "  " +  nextQuestion[1]);
+            print(nextQuestion[0] + "  " + nextQuestion[1]);
             if (nextQuestion[0] + nextQuestion[1] >= 2)
             {
                 UpdateQuestion();
@@ -231,22 +231,31 @@ public class GameController : MonoBehaviourPunCallbacks
 
 
     [PunRPC]
-    void GameOver(int winner)
+    void GameOver()
     {
 
         gameOver.SetActive(true);
 
 
-        if (winner < 2)
-        {
-            gameOver.transform.GetChild(1).GetChild(winner == 0 ? 2 : 3).GetChild(1).GetComponent<Text>().text = "WIN";
 
+        if (score[0] != score[1])
+        {
+            gameOver.transform.GetChild(1).GetChild(score[0] > score[1] ? 2 : 3).GetChild(1).GetComponent<Text>().text = "WIN";
+  
+
+        }
+        else
+        {
+            gameOver.transform.GetChild(1).GetChild(2).GetChild(1).GetComponent<Text>().text = "DRAW";
+            gameOver.transform.GetChild(1).GetChild(3).GetChild(1).GetComponent<Text>().text = "DRAW";
+       
         }
 
         for (int i = 0; i < 1; i++)
         {
             fighters[i].GetComponent<Animator>().SetTrigger("end");
             gameOver.transform.GetChild(1).GetChild(i + 2).GetChild(3).GetComponent<TMP_Text>().text = "Correct " + score[i].ToString();
+            gameOver.transform.GetChild(1).GetChild(i + 2).GetChild(3).GetComponent<TMP_Text>().text = "Score " + score[i].ToString();
         }
 
         //gameOver.transform.GetChild(1).GetComponent<TMP_Text>().text = time.ToString("F0");
