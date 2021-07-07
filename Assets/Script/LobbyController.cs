@@ -114,10 +114,10 @@ public class LobbyController : MonoBehaviourPunCallbacks
             g.transform.SetParent(awayTeam.transform, false);
         }
 
-        if (isMaster)
-        {
-            g.GetComponentInChildren<Image>().gameObject.SetActive(true);
-        }
+        // if (isMaster)
+        // {
+        //     g.GetComponentInChildren<Image>().gameObject.SetActive(true);
+        // }
 
     }
 
