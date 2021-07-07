@@ -98,6 +98,11 @@ public class GameController : MonoBehaviourPunCallbacks
         }
         else
         {
+            for (int i = 0; i < 4; i++)
+            {
+                answers[i].GetComponentInChildren<Button>().interactable = false;
+            }
+
             PV.RPC("Action", RpcTarget.AllBuffered, false, player.GetComponent<PhotonView>().ViewID, 0, !(bool)PhotonNetwork.LocalPlayer.CustomProperties["home"]);
         }
 
@@ -241,25 +246,29 @@ public class GameController : MonoBehaviourPunCallbacks
 
         gameOver.SetActive(true);
 
-        if (score[0] != score[1])
+        int winner;
+
+        if (TopBar.GetHP(0) != TopBar.GetHP(1))
         {
-            print("sdfgdfg");
-            gameOver.transform.GetChild(1).GetChild(score[0] > score[1] ? 2 : 3).GetChild(1).GetComponent<Text>().text = "WIN";
-
-
+            gameOver.transform.GetChild(1).GetChild(TopBar.GetHP(0) > TopBar.GetHP(1) ? 2 : 3).GetChild(1).GetComponent<Text>().text = "WIN";
+            winner = TopBar.GetHP(0) > TopBar.GetHP(1) ? 0 : 1;
         }
         else
         {
             gameOver.transform.GetChild(1).GetChild(2).GetChild(1).GetComponent<Text>().text = "DRAW";
             gameOver.transform.GetChild(1).GetChild(3).GetChild(1).GetComponent<Text>().text = "DRAW";
+            winner = 2;
 
         }
 
-        for (int i = 0; i < 1; i++)
-        {
+        for (int i = 0; i < 2; i++)
+        {   
+
+            int total = (score[i] + winner == i ? 2 : 0) * 10;
+
             fighters[i].GetComponent<Animator>().SetTrigger("end");
             gameOver.transform.GetChild(1).GetChild(i + 2).GetChild(2).GetComponent<TMP_Text>().text = "Correct " + score[i].ToString();
-            gameOver.transform.GetChild(1).GetChild(i + 2).GetChild(3).GetComponent<TMP_Text>().text = "Score " + score[i].ToString();
+            gameOver.transform.GetChild(1).GetChild(i + 2).GetChild(3).GetComponent<TMP_Text>().text = "Score " + total.ToString();
         }
 
         //gameOver.transform.GetChild(1).GetComponent<TMP_Text>().text = time.ToString("F0");
