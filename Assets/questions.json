@@ -2,7 +2,7 @@
     "questions": [
         {
             "id": 1,
-            "title": "The powerhouse of the cell is the…",
+            "title": "The powerhouse of the cell is the...",
             "choices": ["Nucleus", "Golgi Body", "Ribosomes", "Mitochondrion"],
             "answer": 3
         },
@@ -11,6 +11,18 @@
             "title": "Cell membranes are found in",
             "choices": ["Part of the plant", "All animal cells", "Human", "All plant and animal cells"],
             "answer": 3
-        }
+        },
+        {
+            "id": 3,
+            "title": "The process occurs when a red blood cell is immersed in hypertonic solution is...",
+            "choices": ["Crenation", "Haemolysis", "Plasmolysis", "Deplasmolysis"],
+            "answer": 0
+        },
+        {
+            "id": 4,
+            "title": "Which of the ",
+            "choices": ["Lipase", "Haemolysis", "Plasmolysis", "Deplasmolysis"],
+            "answer": 0
+        },
     ]
 }

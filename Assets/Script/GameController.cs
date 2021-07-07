@@ -25,7 +25,7 @@ public class GameController : MonoBehaviourPunCallbacks
     float time = 180;
     private int[] nextQuestion = { 0, 0 }; // states: 0 - pending, 1 - incorrect, 2 - correct
     private int[] score = { 0, 0 };
-    private const int dmg = 10;
+    private const int dmg = 20;
 
     private Hashtable roomProperties = new Hashtable();
     void Awake()
@@ -63,8 +63,8 @@ public class GameController : MonoBehaviourPunCallbacks
         // if (time <= 0 || currIndex >= qs.questions.Length)
         if (currIndex >= qs.questions.Length)
         {
-            //if (PhotonNetwork.IsMasterClient)
-            PV.RPC("GameOver", RpcTarget.AllBuffered);
+            if (PhotonNetwork.IsMasterClient)
+                PV.RPC("GameOver", RpcTarget.AllBuffered);
         }
         else
         {
@@ -183,7 +183,7 @@ public class GameController : MonoBehaviourPunCallbacks
             if (crit >= 2)
             {
                 gameCamera.GetComponent<Animator>().SetTrigger(oppo ? "awayAction" : "homeAction");
-                StartCoroutine(WaitForAttacks(1f, HP - dmg * crit, oppo));
+                StartCoroutine(WaitForAttacks(2f, HP - dmg * crit, oppo));
             }
             else
             {
@@ -197,8 +197,7 @@ public class GameController : MonoBehaviourPunCallbacks
             result.GetComponentInChildren<Image>().sprite = Resources.Load<Sprite>("Cross_Simple_Icons_UI");
 
             nextQuestion[oppo ? 1 : 0] = 1;
-            print(nextQuestion[0] + " " + nextQuestion[1]);
-
+            print(nextQuestion[0] + "  " + nextQuestion[1]);
             if (nextQuestion[0] + nextQuestion[1] >= 2)
             {
                 UpdateQuestion();
