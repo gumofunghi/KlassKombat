@@ -81,8 +81,7 @@ public class Tenenet : MonoBehaviour
                 UserInfo.isLogin = true;
                 UserInfo.username = r.message.id;
                 UserInfo.alias = r.message.alias;
-        
-                //UserInfo.highest = int.Parse(r.user.score[0].value);
+                UserInfo.highest = int.Parse(r.message.score[0].value);
 
                 SceneManager.LoadScene("Scene/MainMenu");
 

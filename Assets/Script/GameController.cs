@@ -20,6 +20,7 @@ public class GameController : MonoBehaviourPunCallbacks
     public Text timer;
     public QuestionRoot qs;
     public int currIndex;
+    public Tenenet tenenet;
     private PhotonView PV;
     private GameObject player;
     float time = 180;
@@ -262,7 +263,11 @@ public class GameController : MonoBehaviourPunCallbacks
         for (int i = 0; i < 2; i++)
         {   
 
-            int total = (score[i] + winner == i ? 2 : 0) * 10;
+            int total = (score[i] + (winner == i ? 2 : 0)) * 10;
+
+            tenenet = GetComponent<Tenenet>();
+            StartCoroutine(tenenet.updatePlayerScore(UserInfo.alias, total, UserInfo.highest ));
+            
 
             fighters[i].GetComponent<Animator>().SetTrigger("end");
             gameOver.transform.GetChild(1).GetChild(i + 2).GetChild(2).GetComponent<TMP_Text>().text = "Correct " + score[i].ToString();

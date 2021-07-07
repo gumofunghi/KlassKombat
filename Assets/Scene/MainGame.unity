@@ -2520,6 +2520,7 @@ GameObject:
   - component: {fileID: 710053519}
   - component: {fileID: 710053521}
   - component: {fileID: 710053522}
+  - component: {fileID: 710053523}
   m_Layer: 0
   m_Name: GameController
   m_TagString: Untagged
@@ -2557,6 +2558,7 @@ MonoBehaviour:
   qs:
     questions: []
   currIndex: 0
+  tenenet: {fileID: 0}
 --- !u!4 &710053520
 Transform:
   m_ObjectHideFlags: 0
@@ -2617,6 +2619,18 @@ MonoBehaviour:
   m_SynchronizeRotation: 1
   m_SynchronizeScale: 0
   m_UseLocal: 1
+--- !u!114 &710053523
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 710053518}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ca7166fad9b9fa14fb40f930cd0dd4cd, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &710800105
 GameObject:
   m_ObjectHideFlags: 0
