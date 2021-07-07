@@ -64,7 +64,7 @@ public class GameController : MonoBehaviourPunCallbacks
         if (currIndex >= qs.questions.Length)
         {
             //if (PhotonNetwork.IsMasterClient)
-            PV.RPC("GameOver", RpcTarget.AllBuffered, 2);
+            PV.RPC("GameOver", RpcTarget.AllBuffered);
         }
         else
         {
@@ -132,7 +132,7 @@ public class GameController : MonoBehaviourPunCallbacks
         if (TopBar.GetHP(oppo ? 0 : 1) <= 0)
         {
             print("someone dieded");
-            // PV.RPC("GameOver", RpcTarget.AllBuffered, oppo ? 1 : 0);
+            PV.RPC("GameOver", RpcTarget.AllBuffered);
         }
 
         score[oppo ? 1 : 0] += 1;
@@ -232,22 +232,31 @@ public class GameController : MonoBehaviourPunCallbacks
 
 
     [PunRPC]
-    void GameOver(int winner)
+    void GameOver()
     {
 
         gameOver.SetActive(true);
 
 
-        if (winner < 2)
-        {
-            gameOver.transform.GetChild(1).GetChild(winner == 0 ? 2 : 3).GetChild(1).GetComponent<Text>().text = "WIN";
 
+        if (score[0] != score[1])
+        {
+            gameOver.transform.GetChild(1).GetChild(score[0] > score[1] ? 2 : 3).GetChild(1).GetComponent<Text>().text = "WIN";
+  
+
+        }
+        else
+        {
+            gameOver.transform.GetChild(1).GetChild(2).GetChild(1).GetComponent<Text>().text = "DRAW";
+            gameOver.transform.GetChild(1).GetChild(3).GetChild(1).GetComponent<Text>().text = "DRAW";
+       
         }
 
         for (int i = 0; i < 1; i++)
         {
             fighters[i].GetComponent<Animator>().SetTrigger("end");
             gameOver.transform.GetChild(1).GetChild(i + 2).GetChild(3).GetComponent<TMP_Text>().text = "Correct " + score[i].ToString();
+            gameOver.transform.GetChild(1).GetChild(i + 2).GetChild(3).GetComponent<TMP_Text>().text = "Score " + score[i].ToString();
         }
 
         //gameOver.transform.GetChild(1).GetComponent<TMP_Text>().text = time.ToString("F0");

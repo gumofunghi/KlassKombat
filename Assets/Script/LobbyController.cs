@@ -48,7 +48,7 @@ public class LobbyController : MonoBehaviourPunCallbacks
     {
         // if (PV.IsMine)
         // {print("sda");
-        PV.RPC("TeamAssignment", RpcTarget.AllBuffered, PlayerName.GetComponent<PhotonView>().ViewID, PhotonNetwork.IsMasterClient);
+        PV.RPC("TeamAssignment", RpcTarget.AllBuffered, PlayerName.GetComponent<PhotonView>().ViewID, target);
         // }
     }
 
@@ -82,7 +82,7 @@ public class LobbyController : MonoBehaviourPunCallbacks
     }
 
     [PunRPC]
-    void TeamAssignment(int id, bool isMaster)
+    void TeamAssignment(int id, Player p)
     {
         // GameObject[] gs = GameObject.FindGameObjectsWithTag("PlayerName");
 
@@ -114,10 +114,10 @@ public class LobbyController : MonoBehaviourPunCallbacks
             g.transform.SetParent(awayTeam.transform, false);
         }
 
-        // if (isMaster)
-        // {
-        //     g.GetComponentInChildren<Image>().gameObject.SetActive(true);
-        // }
+        if (p.IsMasterClient)
+        {
+            g.transform.GetChild(1).gameObject.SetActive(true);
+        }
 
     }
 
