@@ -47,11 +47,7 @@ public class LobbyController : MonoBehaviourPunCallbacks
     public override void OnPlayerPropertiesUpdate(Player target, Hashtable changedProps)
     {
         // if (PV.IsMine)
-<<<<<<< HEAD
-        // {print("sda");
-=======
         // {
->>>>>>> 2cd09dc69c71a9d19480b885080d54ac296c83a3
         PV.RPC("TeamAssignment", RpcTarget.AllBuffered, PlayerName.GetComponent<PhotonView>().ViewID, target);
         // }
 
