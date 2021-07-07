@@ -64,7 +64,10 @@ public class GameController : MonoBehaviourPunCallbacks
         if (currIndex >= qs.questions.Length)
         {
             if (PhotonNetwork.IsMasterClient)
+            {
+                print(score[0] + " " + score[1]);
                 PV.RPC("GameOver", RpcTarget.AllBuffered);
+            }
         }
         else
         {
@@ -225,7 +228,7 @@ public class GameController : MonoBehaviourPunCallbacks
 
 
         currIndex++;
-        print(currIndex + "   " + qs.questions.Length);
+        // print(currIndex + "   " + qs.questions.Length);
 
     }
 

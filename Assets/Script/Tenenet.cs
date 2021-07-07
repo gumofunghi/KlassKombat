@@ -154,25 +154,28 @@ public class Tenenet : MonoBehaviour
     //     }
     // }
 
-    public IEnumerator updatePlayerScore()
+    public IEnumerator updatePlayerScore(string alias, int newHighScore, int preHighScore )
     {
-        string alias = "ramen|123456";
         string id = "high_score";
-        int value = 30;
 
-        UnityWebRequest www = UnityWebRequest.Get(URL + "/insertPlayerActivity" + "?token=" + token + "&alias=" + alias + "&id=" + id + "&operator=" + "add" + "&value=" + value);
+        if(newHighScore > preHighScore){
 
-        yield return www.SendWebRequest();
+            int update = newHighScore - preHighScore;
 
-        if (www.isNetworkError || www.isHttpError)
-        {
-            Debug.Log(www.error);
-        }
-        else
-        {
+            UnityWebRequest www = UnityWebRequest.Get(URL + "/insertPlayerActivity" + "?token=" + token + "&alias=" + alias + "&id=" + id + "&operator=" + "add" + "&value=" + update);
 
-            Debug.Log(www.downloadHandler.text);
+            yield return www.SendWebRequest();
 
+            if (www.isNetworkError || www.isHttpError)
+            {
+                Debug.Log(www.error);
+            }
+            else
+            {
+
+                Debug.Log(www.downloadHandler.text);
+
+            }
         }
     }
 
