@@ -64,7 +64,7 @@ public class GameController : MonoBehaviourPunCallbacks
         if (currIndex >= qs.questions.Length)
         {
             //if (PhotonNetwork.IsMasterClient)
-                //PV.RPC("GameOver", RpcTarget.AllBuffered, 2);
+            PV.RPC("GameOver", RpcTarget.AllBuffered, 2);
         }
         else
         {
@@ -98,7 +98,7 @@ public class GameController : MonoBehaviourPunCallbacks
         }
         else
         {
-            PV.RPC("Action", RpcTarget.AllBuffered, false, player.GetComponent<PhotonView>().ViewID, 0, false);
+            PV.RPC("Action", RpcTarget.AllBuffered, false, player.GetComponent<PhotonView>().ViewID, 0, !(bool)PhotonNetwork.LocalPlayer.CustomProperties["home"]);
         }
 
     }
@@ -132,12 +132,11 @@ public class GameController : MonoBehaviourPunCallbacks
         if (TopBar.GetHP(oppo ? 0 : 1) <= 0)
         {
             print("someone dieded");
-            PV.RPC("GameOver", RpcTarget.AllBuffered, oppo ? 1 : 0);
+            // PV.RPC("GameOver", RpcTarget.AllBuffered, oppo ? 1 : 0);
         }
 
         score[oppo ? 1 : 0] += 1;
         UpdateQuestion();
-
 
     }
     public void BackButton(string page)
@@ -198,6 +197,7 @@ public class GameController : MonoBehaviourPunCallbacks
             result.GetComponentInChildren<Image>().sprite = Resources.Load<Sprite>("Cross_Simple_Icons_UI");
 
             nextQuestion[oppo ? 1 : 0] = 1;
+            print(nextQuestion[0] + " " + nextQuestion[1]);
 
             if (nextQuestion[0] + nextQuestion[1] >= 2)
             {
