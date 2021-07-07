@@ -1,0 +1,64 @@
+{
+    "questions": [
+        {
+            "id": 1,
+            "title": "The powerhouse of the cell is the...",
+            "choices": ["Nucleus", "Golgi Body", "Ribosomes", "Mitochondrion"],
+            "answer": 3
+        },
+        {
+            "id": 2,
+            "title": "Cell membranes are found in",
+            "choices": ["Part of the plant", "All animal cells", "Human", "All plant and animal cells"],
+            "answer": 3
+        },
+        {
+            "id": 3,
+            "title": "The process occurs when a red blood cell is immersed in hypertonic solution is...",
+            "choices": ["Crenation", "Haemolysis", "Plasmolysis", "Deplasmolysis"],
+            "answer": 0
+        },
+        {
+            "id": 4,
+            "title": "What is the basic unit of protein molecules?",
+            "choices": ["Fatty Acid", "Glycerol", "Glucose", "Amino Acid"],
+            "answer": 3
+        },
+        {
+            "id": 5,
+            "title": "Which stain can be removed by using the washing powder that contents protease?",
+            "choices": ["Vegetable Stain", "Fruit Stain", "Egg Staine", "Oil Stain"],
+            "answer": 2
+        },
+        {
+            "id": 6,
+            "title": "Which is the process that occurs only in a liver cell?",
+            "choices": ["Synthesis of bile", "Synthesis of lipase enzyme", "Synthesis of insulin hormone", "Synthesis of vitamins"],
+            "answer": 0
+        },
+        {
+            "id": 6,
+            "title": "Micronutrients are needed in small quantity by plant. Which of the following is a micronutrient?",
+            "choices": ["Nitrogen", "Phosphorus", "Magnesium", "Manganese"],
+            "answer": 0
+        },
+        {
+            "id": 7,
+            "title": "Which of the following disease can be passed from one individual to another during blood transfusion?",
+            "choices": ["Cholera", "AIDS", "Scurvy", "COPD"],
+            "answer": 1
+        },
+        {
+            "id": 8,
+            "title": "What is the chances of albino parents to have an albino child?",
+            "choices": ["0%", "25%", "75%", "100%"],
+            "answer": 3
+        },
+        {
+            "id": 9,
+            "title": "Which of the following is not involved in the transportation of carbon dioxide by the blood.",
+            "choices": ["Carbonic Acid", "Carbaminohaemoglobin", "Hydrogen Carbonate Ion", "Carbon Monoxide"],
+            "answer": 3
+        }
+    ]
+}

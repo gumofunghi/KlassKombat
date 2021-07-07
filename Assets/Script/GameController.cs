@@ -39,7 +39,9 @@ public class GameController : MonoBehaviourPunCallbacks
     void Start()
     {
         currIndex = 0;
-        string jsonString = File.ReadAllText("questions.json");
+
+        // string jsonString = File.ReadAllText("questions.json");
+        string jsonString = Resources.Load<TextAsset>("questions").text;
         qs = JsonUtility.FromJson<QuestionRoot>(jsonString);
 
         PV = GetComponent<PhotonView>();
@@ -64,7 +66,11 @@ public class GameController : MonoBehaviourPunCallbacks
         if (currIndex >= qs.questions.Length)
         {
             if (PhotonNetwork.IsMasterClient)
+            {
+                print(score[0] + " " + score[1]);
                 PV.RPC("GameOver", RpcTarget.AllBuffered);
+            }
+
         }
         else
         {
@@ -84,11 +90,6 @@ public class GameController : MonoBehaviourPunCallbacks
     public void Answered()
     {
         string answer = EventSystem.current.currentSelectedGameObject.name;
-
-        for (int i = 0; i < 4; i++)
-        {
-            answers[i].GetComponentInChildren<Button>().interactable = false;
-        }
 
         if (int.Parse(answer) == qs.questions[currIndex].answer)
         {
@@ -128,6 +129,8 @@ public class GameController : MonoBehaviourPunCallbacks
 
         TopBar.SetHP(newHP, oppo ? 0 : 1);
 
+        score[oppo ? 1 : 0] += 1;
+
         // check if opponent die
         if (TopBar.GetHP(oppo ? 0 : 1) <= 0)
         {
@@ -135,7 +138,6 @@ public class GameController : MonoBehaviourPunCallbacks
             PV.RPC("GameOver", RpcTarget.AllBuffered);
         }
 
-        score[oppo ? 1 : 0] += 1;
         UpdateQuestion();
 
     }
@@ -174,8 +176,14 @@ public class GameController : MonoBehaviourPunCallbacks
 
         GameObject result = PhotonView.Find(p).gameObject;
 
+
         if (isSuccess)
         {
+            for (int i = 0; i < 4; i++)
+            {
+                answers[i].GetComponentInChildren<Button>().interactable = false;
+            }
+
             result.GetComponentInChildren<Image>().sprite = Resources.Load<Sprite>("CheckMark_Simple_Icons_UI");
 
             int HP = TopBar.GetHP(oppo ? 0 : 1);
@@ -223,9 +231,7 @@ public class GameController : MonoBehaviourPunCallbacks
             answers[i].GetComponentInChildren<Button>().interactable = true;
         }
 
-
         currIndex++;
-        print(currIndex + "   " + qs.questions.Length);
 
     }
 
@@ -236,25 +242,24 @@ public class GameController : MonoBehaviourPunCallbacks
 
         gameOver.SetActive(true);
 
-
-
         if (score[0] != score[1])
         {
+            print("sdfgdfg");
             gameOver.transform.GetChild(1).GetChild(score[0] > score[1] ? 2 : 3).GetChild(1).GetComponent<Text>().text = "WIN";
-  
+
 
         }
         else
         {
             gameOver.transform.GetChild(1).GetChild(2).GetChild(1).GetComponent<Text>().text = "DRAW";
             gameOver.transform.GetChild(1).GetChild(3).GetChild(1).GetComponent<Text>().text = "DRAW";
-       
+
         }
 
         for (int i = 0; i < 1; i++)
         {
             fighters[i].GetComponent<Animator>().SetTrigger("end");
-            gameOver.transform.GetChild(1).GetChild(i + 2).GetChild(3).GetComponent<TMP_Text>().text = "Correct " + score[i].ToString();
+            gameOver.transform.GetChild(1).GetChild(i + 2).GetChild(2).GetComponent<TMP_Text>().text = "Correct " + score[i].ToString();
             gameOver.transform.GetChild(1).GetChild(i + 2).GetChild(3).GetComponent<TMP_Text>().text = "Score " + score[i].ToString();
         }
 
