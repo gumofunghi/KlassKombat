@@ -55,6 +55,8 @@ public class UserInfo : MonoBehaviour
     public static bool isLogin;
     public static string alias;
     public static string username;
+    public static string achievements;
     public static int highest;
+    public static int game_number;
 
 }

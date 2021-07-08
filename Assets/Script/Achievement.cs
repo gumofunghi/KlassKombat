@@ -11,7 +11,7 @@ public class Achievement : MonoBehaviour
     void Start()
     {
         tenenet = GetComponent<Tenenet>();
-        StartCoroutine(tenenet.getPlayerAchievements());
+        StartCoroutine(tenenet.getPlayerAchievements(UserInfo.alias));
     }
 
     public void BackButton(string page)

@@ -242,8 +242,19 @@ public class GameController : MonoBehaviourPunCallbacks
     [PunRPC]
     void GameOver()
     {
+        tenenet = GetComponent<Tenenet>();
+        gameOver.SetActive(true);  
 
-        gameOver.SetActive(true);
+        int new_game_number = 0;
+
+        if(PV.IsMine && UserInfo.game_number >= new_game_number ){
+            new_game_number = UserInfo.game_number + 1;
+            StartCoroutine(tenenet.updatePlayerGameNumber(UserInfo.alias)); 
+        }
+
+        if(PV.IsMine && new_game_number == 1){
+             StartCoroutine(tenenet. updatePlayerAchievement(UserInfo.alias, new_game_number)); 
+        }
 
         int winner;
 
@@ -251,6 +262,7 @@ public class GameController : MonoBehaviourPunCallbacks
         {
             gameOver.transform.GetChild(1).GetChild(TopBar.GetHP(0) > TopBar.GetHP(1) ? 2 : 3).GetChild(1).GetComponent<Text>().text = "WIN";
             winner = TopBar.GetHP(0) > TopBar.GetHP(1) ? 0 : 1;
+
         }
         else
         {
@@ -269,7 +281,6 @@ public class GameController : MonoBehaviourPunCallbacks
 
             if(PV.IsMine && UserInfo.highest < total){
             
-                tenenet = GetComponent<Tenenet>();
                 StartCoroutine(tenenet.updatePlayerScore(UserInfo.alias, total, UserInfo.highest )); 
                 UserInfo.highest = total;
                 
@@ -279,6 +290,8 @@ public class GameController : MonoBehaviourPunCallbacks
             gameOver.transform.GetChild(1).GetChild(i + 2).GetChild(2).GetComponent<TMP_Text>().text = "Correct " + score[i].ToString();
             gameOver.transform.GetChild(1).GetChild(i + 2).GetChild(3).GetComponent<TMP_Text>().text = "Score " + total.ToString();
         }
+        
+      
 
 
             
